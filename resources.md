@@ -4,6 +4,8 @@
 
 [A Survey on Tensor Techniques and Applications in Machine Learning](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8884203)
 
+[Tensor Methods in Computer Vision and Deep Learning](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=9420085)
+
 [Stanford CS230](https://cs230.stanford.edu/syllabus/)
 
 [A guide to convolution arithmetic for deep
