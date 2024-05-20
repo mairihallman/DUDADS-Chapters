@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1716177340.81527 "c:/Users/mairi/code/dudads-chapters/deep-learning.tex" "deep-learning.pdf" "deep-learning" 1716177341.28715 0
+["pdflatex"] 1716231688.35884 "c:/Users/mairi/code/dudads-chapters/deep-learning.tex" "deep-learning.pdf" "deep-learning" 1716231689.23101 0
   "C:/Users/mairi/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1716168233 80909 eab91d9745dd2edfd62a31d53cd5fe15 ""
   "C:/Users/mairi/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1716168008 24240354 446162faa19355bde7d488dbe32d3a0f ""
   "C:/Users/mairi/AppData/Local/Programs/MiKTeX/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1233951848 1004 54797486969f23fa377b128694d548df ""
@@ -19,10 +19,15 @@
   "C:/Users/mairi/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmsy8.tfm" 1136765053 1120 8b7d695260f3cff42e636090a8002094 ""
   "C:/Users/mairi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx10.pfb" 1247596666 34811 78b52f49e893bcba91bd7581cdc144c0 ""
   "C:/Users/mairi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx12.pfb" 1247596666 32080 340ef9bf63678554ee606688e7b5339d ""
+  "C:/Users/mairi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb" 1247596667 30251 6afa5cb1d0204815a708a080681d4674 ""
   "C:/Users/mairi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb" 1247596667 36299 5f9df58c2139e7edcf37c8fca4bd384d ""
+  "C:/Users/mairi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi7.pfb" 1247596667 36281 c355509802a035cadc5f15869451dcee ""
   "C:/Users/mairi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb" 1247596667 35752 024fb6c41858982481f6968b5fc26508 ""
   "C:/Users/mairi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb" 1247596667 32722 d7379af29a190c3f453aba36302ff5a9 ""
   "C:/Users/mairi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr17.pfb" 1247596666 32362 bc3f3eec7ab7d65fe700963d4017d32c ""
+  "C:/Users/mairi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr7.pfb" 1247596667 32762 7fee39e011c23b3589931effd97b9702 ""
+  "C:/Users/mairi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb" 1247596667 32569 5e5ddc8df908dea60932f3c484a54c0d ""
+  "C:/Users/mairi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy7.pfb" 1247596666 32716 08e384dc442464e7285e891af9f45947 ""
   "C:/Users/mairi/AppData/Local/Programs/MiKTeX/tex/context/base/mkii/supp-pdf.mkii" 1580390158 71627 94eb9990bed73c364d7f53f960cc8c5b ""
   "C:/Users/mairi/AppData/Local/Programs/MiKTeX/tex/generic/iftex/iftex.sty" 1643997108 7237 bdd120a32c8fdb4b433cf9ca2e7cd98a ""
   "C:/Users/mairi/AppData/Local/Programs/MiKTeX/tex/generic/infwarerr/infwarerr.sty" 1575399508 8356 7bbb2c2373aa810be568c29e333da8ed ""
@@ -48,9 +53,9 @@
   "C:/Users/mairi/AppData/Local/Programs/MiKTeX/tex/latex/kvoptions/kvoptions.sty" 1656236481 22555 6d8e155cfef6d82c3d5c742fea7c992e ""
   "C:/Users/mairi/AppData/Local/Programs/MiKTeX/tex/latex/kvsetkeys/kvsetkeys.sty" 1665066333 13815 760b0c02f691ea230f5359c4e1de23a7 ""
   "C:/Users/mairi/AppData/Local/Programs/MiKTeX/tex/latex/l3backend/l3backend-pdftex.def" 1714423267 29785 470380cd55470b90fdb46d40220ba304 ""
-  "c:/Users/mairi/code/dudads-chapters/deep-learning.tex" 1716177339 1784 e13d4480f55becbf325ffeb531f9462d ""
-  "deep-learning.aux" 1716177341 1748 40834c55ee11e1b0df0d20737a475237 "pdflatex"
-  "deep-learning.tex" 1716177339 1784 e13d4480f55becbf325ffeb531f9462d ""
+  "c:/Users/mairi/code/dudads-chapters/deep-learning.tex" 1716231686 3417 c79c1b7abc3cae63b20de0843d1070d7 ""
+  "deep-learning.aux" 1716231689 2245 1161cd15f176c23989a7323a8388c932 "pdflatex"
+  "deep-learning.tex" 1716231686 3417 c79c1b7abc3cae63b20de0843d1070d7 ""
   (generated)
   "deep-learning.aux"
   "deep-learning.log"

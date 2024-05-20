@@ -11,6 +11,8 @@
 [A guide to convolution arithmetic for deep
 learning](https://arxiv.org/pdf/1603.07285)
 
+[Linear Algebra and Learning From Data](http://staff.ustc.edu.cn/~ynyang/2023/books/8.pdf)
+
 [Deep Learning](https://www.deeplearningbook.org/) - chapters 6, 9, 10, 14, 20
 
 [3Blue1Brown - But what is a convolution?](https://www.youtube.com/watch?v=KuXjwB4LzSA)

@@ -22,9 +22,45 @@ You are likely familiar with scalars, vectors, and matrices. These can be though
 
 \subsection{Tensor Products}
 
-Tensor additon and subtraction are self-explanatory if matrix addition and subtraction are understood. The same cannot be said for tensor products. Below is an overview of important tensor products.
+Tensor additon and subtraction are self-explanatory if matrix addition and subtraction are understood. The same cannot be said for tensor products. Below is an overview of tensor products necessary for the decompositions that will be presented in the next section.
 
-% need to figure out which tensor products to include
+\subsubsection{Outer Product \(\circ\)}
+
+A tensor \(T^{(N)}\) can be expressed as a product of \(N\) vectors. This is called the outer product (denoted \(\circ\)).
+
+\[T^{(N)} = u_1 \circ u_2 \circ \dots \circ u_N\]
+
+% make less hand-wavey
+
+\subsubsection{Kronecker Product \(\otimes\)}
+
+The Konecker product of two matrices \(A\) and B, their Kronecker product is a matrix of the products of each element in \(A\) and the entire matrix \(B\).
+
+\[A \otimes B = \begin{bmatrix}
+    a_{11}B & a_{12}B & \dots & a_{1n}B \\
+    a_{21}B & a_{22}B & \dots & a_{2n}B \\
+    \vdots & \vdots & \ddots & \vdots \\
+    a_{m1}B & a{m2}B & \dots & a_{mn}B
+\end{bmatrix} \]
+
+\subsubsection{Khatri-Rao Product \(\odot\)}
+
+The Khatri-Rao product of two matrices \(A\) and \(B\), each with the same number of columns, is a matrix composed of the Kronecker products of the columns in matrix \(A\) and the columns in matrix \(B\) with the same indices.
+
+\[A^{:\times n} \odot B^{:\times n} = \begin{bmatrix}
+    a_{:,1} \otimes b_{:,1} & a_{:,2} \otimes b_{:,2} & \dots & a_{:,n} \otimes b_{:,n}
+\end{bmatrix} \]
+
+\subsubsection{Hadamard Product \(*\)}
+
+The Hadamard product of two matrices \(A\) and \(B\) of the same dimensions is a matrix formed of the products of the elements in \(A\) and \(B\) with the same indices.
+
+\[A^{m \times n} * B^{m \times n} = \begin{bmatrix}
+    a_{11}b_{11} & a_{12}b_{12} & \dots & a_{1n}b_{1n} \\
+    a_{21}b_{21} & a_{22}b_{22} & \dots & a_{2n}b_{2n} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    a_{m1}b_{m1} & a_{m2}b_{m2} & \dots & a_{mn}b_{mn}
+\end{bmatrix} \]
 
 \subsection{Tensor Decompositions}
 
