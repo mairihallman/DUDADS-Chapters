@@ -17,6 +17,16 @@ learning](https://arxiv.org/pdf/1603.07285)
 
 [3Blue1Brown - But what is a convolution?](https://www.youtube.com/watch?v=KuXjwB4LzSA)
 
+[Quantization Fundamentals with Hugging Face](https://www.deeplearning.ai/short-courses/quantization-fundamentals-with-hugging-face/) - course completed 21/05/2024
+
+[Quantization in Depth](https://www.deeplearning.ai/short-courses/quantization-in-depth/) - course in progress
+
+[Intro to Deep Learning](https://www.kaggle.com/learn/intro-to-deep-learning) - course for later
+
+[Computer Vision](https://www.kaggle.com/learn/computer-vision) - course for later
+
+[Machine Learning Explainability](https://www.kaggle.com/learn/machine-learning-explainability) - possible course for later
+
 # Natural Language Processing 
 
 [Speech and Language Processing](https://web.stanford.edu/~jurafsky/slp3/ed3bookfeb3_2024.pdf)
