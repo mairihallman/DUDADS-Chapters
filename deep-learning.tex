@@ -64,11 +64,31 @@ The Hadamard product of two matrices \(A\) and \(B\) of the same dimensions is a
 
 \subsection{Tensor Decompositions}
 
+% add intro
+
 \subsubsection{CP Decomposition}
+
+The canonical polyadic, or CP Decomposition, decomposes a tensor into vectors.
+
+\[T = \sum_{r-1}^R u_r^{(1)} \circ  u_r^{(2)} \circ \dots  u_r^{(R)}\] % review notation
+
+% add info re computation
 
 \subsubsection{Tucker Decomposition}
 
+The Tucker decomposition decomposes a tensor into a core tensor and factored matrices. % add more explanantion
+
+\[T = C\prod_{n=1}^N A^n\], % review notation
+
+where \(C\) is the core tensor.
+
+% add info re computation
+
 \subsubsection{Tensor Train}
+
+The tensor train decomposition decomposes a tensor into a product of third-order tensors. It is used when a tensor is too large for the CP decomposition to be practical. 
+
+% add representative equation, info on computation
 
 \section{Selecting A Network Architecture}
 

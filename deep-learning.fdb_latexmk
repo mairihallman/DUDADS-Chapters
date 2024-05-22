@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1716317386.48576 "c:/Users/mairi/code/dudads-chapters/deep-learning.tex" "deep-learning.pdf" "deep-learning" 1716317386.96613 0
+["pdflatex"] 1716343981.6948 "c:/Users/mairi/code/dudads-chapters/deep-learning.tex" "deep-learning.pdf" "deep-learning" 1716343982.13772 0
   "C:/Users/mairi/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1716168233 80909 eab91d9745dd2edfd62a31d53cd5fe15 ""
   "C:/Users/mairi/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1716168008 24240354 446162faa19355bde7d488dbe32d3a0f ""
   "C:/Users/mairi/AppData/Local/Programs/MiKTeX/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1233951848 1004 54797486969f23fa377b128694d548df ""
@@ -53,9 +53,9 @@
   "C:/Users/mairi/AppData/Local/Programs/MiKTeX/tex/latex/kvoptions/kvoptions.sty" 1656236481 22555 6d8e155cfef6d82c3d5c742fea7c992e ""
   "C:/Users/mairi/AppData/Local/Programs/MiKTeX/tex/latex/kvsetkeys/kvsetkeys.sty" 1665066333 13815 760b0c02f691ea230f5359c4e1de23a7 ""
   "C:/Users/mairi/AppData/Local/Programs/MiKTeX/tex/latex/l3backend/l3backend-pdftex.def" 1714423267 29785 470380cd55470b90fdb46d40220ba304 ""
-  "c:/Users/mairi/code/dudads-chapters/deep-learning.tex" 1716317384 3588 008ae3793b4bb2a65b4052f9ef98f08b ""
-  "deep-learning.aux" 1716317386 2350 d68096b4d50089ca870cd0d7e9ebe873 "pdflatex"
-  "deep-learning.tex" 1716317384 3588 008ae3793b4bb2a65b4052f9ef98f08b ""
+  "c:/Users/mairi/code/dudads-chapters/deep-learning.tex" 1716343980 4261 537cd9dd31162f15a52912a7fa2498cc ""
+  "deep-learning.aux" 1716343982 2350 cfc8f019b373aa2e26d5e23fd3c1deb8 "pdflatex"
+  "deep-learning.tex" 1716343980 4261 537cd9dd31162f15a52912a7fa2498cc ""
   (generated)
   "deep-learning.aux"
   "deep-learning.log"
