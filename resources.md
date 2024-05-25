@@ -27,6 +27,8 @@ learning](https://arxiv.org/pdf/1603.07285)
 
 [Machine Learning Explainability](https://www.kaggle.com/learn/machine-learning-explainability) - possible course for later
 
+[A Survey of Convolutional Neural Networks: Analysis, Applications, and Prospects](https://arxiv.org/pdf/2004.02806)
+
 # Natural Language Processing 
 
 [Speech and Language Processing](https://web.stanford.edu/~jurafsky/slp3/ed3bookfeb3_2024.pdf)
