@@ -1,6 +1,9 @@
 \documentclass{article}
 \usepackage{graphicx} % Required for inserting images
 \usepackage{amsmath} % For mathematical symbols and environments
+\usepackage{biblatex} %Imports biblatex package
+\usepackage{mathtools}
+\addbibresource{dl-ref.bib} %Import the bibliography file
 
 \title{Deep Learning}
 \author{Mairi Hallman}
@@ -28,7 +31,9 @@ Tensor additon and subtraction are self-explanatory if matrix addition and subtr
 
 A tensor \(T^{(N)}\) can be expressed as a product of \(N\) vectors. This is called the outer product (denoted \(\circ\)).
 
-\[T^{(N)} = u_1 \circ u_2 \circ \dots \circ u_N\]
+\begin{equation}
+    T^{(N)} = u_1 \circ u_2 \circ \dots \circ u_N
+\end{equation}
 
 % make less hand-wavey
 
@@ -36,31 +41,37 @@ A tensor \(T^{(N)}\) can be expressed as a product of \(N\) vectors. This is cal
 
 The Konecker product of two matrices \(A\) and B, their Kronecker product is a matrix of the products of each element in \(A\) and the entire matrix \(B\).
 
-\[A \otimes B = \begin{bmatrix}
+\begin{equation}
+    A \otimes B = \begin{bmatrix}
     a_{11}B & a_{12}B & \dots & a_{1n}B \\
     a_{21}B & a_{22}B & \dots & a_{2n}B \\
     \vdots & \vdots & \ddots & \vdots \\
-    a_{m1}B & a{m2}B & \dots & a_{mn}B
-\end{bmatrix} \]
+    a_{m1}B & a{m2}B & \dots & a_{mn}B \end{bmatrix}
+    \label{Kronecker} 
+\end{equation}
 
 \subsubsection{Khatri-Rao Product \(\odot\)}
 
 The Khatri-Rao product of two matrices \(A\) and \(B\), each with the same number of columns, is a matrix composed of the Kronecker products of the columns in matrix \(A\) and the columns in matrix \(B\) with the same indices.
 
-\[A^{:\times n} \odot B^{:\times n} = \begin{bmatrix}
-    a_{:,1} \otimes b_{:,1} & a_{:,2} \otimes b_{:,2} & \dots & a_{:,n} \otimes b_{:,n}
-\end{bmatrix} \]
+\begin{equation}
+    A^{:\times n} \odot B^{:\times n} = \begin{bmatrix}
+    a_{:,1} \otimes b_{:,1} & a_{:,2} \otimes b_{:,2} & \dots & a_{:,n} \otimes b_{:,n} \end{bmatrix}
+    \label{Khatri-Rao}
+\end{equation}
 
 \subsubsection{Hadamard Product \(*\)}
 
 The Hadamard product of two matrices \(A\) and \(B\) of the same dimensions is a matrix formed of the products of the elements in \(A\) and \(B\) with the same indices.
 
-\[A^{m \times n} * B^{m \times n} = \begin{bmatrix}
+\begin{equation}
+    A^{m \times n} * B^{m \times n} = \begin{bmatrix}
     a_{11}b_{11} & a_{12}b_{12} & \dots & a_{1n}b_{1n} \\
     a_{21}b_{21} & a_{22}b_{22} & \dots & a_{2n}b_{2n} \\
     \vdots & \vdots & \ddots & \vdots \\
-    a_{m1}b_{m1} & a_{m2}b_{m2} & \dots & a_{mn}b_{mn}
-\end{bmatrix} \]
+    a_{m1}b_{m1} & a_{m2}b_{m2} & \dots & a_{mn}b_{mn} \end{bmatrix} 
+    \label{Hadamard}
+\end{equation}
 
 \subsection{Tensor Decompositions}
 
@@ -70,7 +81,10 @@ The Hadamard product of two matrices \(A\) and \(B\) of the same dimensions is a
 
 The canonical polyadic, or CP Decomposition, decomposes a tensor into vectors.
 
-\[T = \sum_{r-1}^R u_r^{(1)} \circ  u_r^{(2)} \circ \dots  u_r^{(R)}\] % review notation
+\begin{equation}
+    T = \sum_{r-1}^R u_r^{(1)} \circ  u_r^{(2)} \circ \dots  u_r^{(R)}\
+    \label{CP}
+\end{equation} % review notation
 
 % add info re computation
 
@@ -78,7 +92,10 @@ The canonical polyadic, or CP Decomposition, decomposes a tensor into vectors.
 
 The Tucker decomposition decomposes a tensor into a core tensor and factored matrices. % add more explanantion
 
-\[T = C\prod_{n=1}^N A^n\], % review notation
+\begin{equation}
+    T = C\prod_{n=1}^N A^n
+    \label{Tucker}
+\end{equation} % review notation
 
 where \(C\) is the core tensor.
 
@@ -94,7 +111,48 @@ The tensor train decomposition decomposes a tensor into a product of third-order
 
 \section{Convolutional Neural Networks}
 
+% add intro
+
 \subsection{What Is Convolution?}
+
+Many young people who are active on social media use filters on their pictures before posting them. These filters apply different effects to the photo, such as blurring, making the image black and white, or adding cartoon-like effects. When you apply a filter to a photo, you are using convolution. Convolution is an operation that takes the aggregation of the element-wise product of a tensor of input data and a (typically smaller) tensor, called a kernel. This produces a feature map. In the context of image processing, the original image is the input data, the filter is the kernel, and the filtered image is the feature map. 
+
+This is an example of discrete convolution, which is the case that we will be primarily concerned with. % In the interest of providing a complete resource, equations for discrete and continuous convolution in one dimension are provided below \cite{Goodfellow-et-al-2016}.
+
+In one dimension, discrete convolution is denoted
+\begin{equation}
+    \underbrace{s(i)}_{\substack{\text{feature} \\ \text{map}}} = (x*y)(i) = \sum\limits_{\substack{m}} \underbrace{x(m)}_{\substack{\text{input} \\ \text{data}}}\underbrace{y(i-m)}_\text{kernel}
+    \label{1D-discrete-convolution}\
+\end{equation}
+
+
+% In the continuous case, equation \ref{1D-discrete-convolution} becomes
+% \begin{equation}
+    % s(i) = (x*y)(i) = \int_m x(m)y(i-m)dm
+    % \label{1D-continuous-convolution}\
+% \end{equation}
+
+One of the most common applications of CNNs is in digital image processing. In the case of a black and white image, the input data is a two-dimensional tensor. Discrete convolution in two dimensions can be performed as follows \cite{Goodfellow-et-al-2016}. %check this
+
+\begin{equation}
+    s(i,j) = (x*y)(i,j)\sum\limits_{\substack{m}}\sum\limits_{\substack{n}} x(i,j)y(i-m,j-n)
+    \label{2D-discrete-convolution}
+\end{equation}
+
+Since convolution is commutative, equation \ref{flipped-2D-discrete-convolution} also holds. 
+
+\begin{equation}
+    s(i,j) = (y*x)(i,j)\sum\limits_{\substack{m}}\sum\limits_{\substack{n}} x(i-m,j-n)y(i,j)
+    \label{flipped-2D-discrete-convolution}
+\end{equation}
+
+Two-dimensional discrete convolution is equivalent to reversing the row and column indices of the kernel, performing element-wise multiplication, and taking the sum of the products. In the context of deep learning, the term ``convolution" often refers to a similar operation called cross-correlation (equation). This is equivalent to convolution without the reversing of the matrix indices \cite{Goodfellow-et-al-2016}. 
+
+\begin{equation}
+    s(i,j) = (y*x)(i,j)\sum\limits_{\substack{m}}\sum\limits_{\substack{n}} x(i+m,j+n)y(i,j)
+    \label{cross-correlation}
+\end{equation}
+
 
 % discrete case: \((a * b)_n = \sum\limits_{\substack{i,j \\ i+j=n}} a_i \cdot b_j\)
 
