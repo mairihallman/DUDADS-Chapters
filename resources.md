@@ -29,6 +29,10 @@ learning](https://arxiv.org/pdf/1603.07285)
 
 [A Survey of Convolutional Neural Networks: Analysis, Applications, and Prospects](https://arxiv.org/pdf/2004.02806)
 
+[Probabilistic Machine Learning: An Introduction](https://probml.github.io/pml-book/book1.html) - chapters 14-16
+
+[Probabilistic Machine Learning: Advanced Topics](https://probml.github.io/pml-book/book2.html) - chapter 16 for sure, maybe 20, 21, 17
+
 # Natural Language Processing 
 
 [Speech and Language Processing](https://web.stanford.edu/~jurafsky/slp3/ed3bookfeb3_2024.pdf)
