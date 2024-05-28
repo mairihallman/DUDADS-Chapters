@@ -153,7 +153,15 @@ Two-dimensional discrete convolution is equivalent to reversing the row and colu
     \label{cross-correlation}
 \end{equation}
 
+\subsection{The Convolutional Layer}
 
+The convolutional layers used in a CNN have three steps \cite{Goodfellow-et-al-2016}.
+
+\begin{enumerate}
+    \item Several parallel convolutions yield a set of linear activations.
+    \item Each linear activation function is run through a non-linear activation function, such as ReLU. This introduces non-linearity and gives the network more flexibility. % fact-check this
+    \item A pooling function replaces the output at a given location with a summary statistic of nearby outputs. One common pooling function is the max pooling function, which provides the maximum output within a rectangular neighbourhood. Pooling is useful when we only care about whether a feature is present and not its specific location. It is also helpful when processing different-sized inputs.
+\end{enumerate}
 % discrete case: \((a * b)_n = \sum\limits_{\substack{i,j \\ i+j=n}} a_i \cdot b_j\)
 
 \subsection{Image Classification Example}
