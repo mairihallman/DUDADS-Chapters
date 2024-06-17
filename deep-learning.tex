@@ -1,8 +1,58 @@
 \documentclass{article}
 \usepackage{graphicx} % Required for inserting images
+\usepackage[margin=2.54cm]{geometry}
 \usepackage{amsmath} % For mathematical symbols and environments
 \usepackage{biblatex} %Imports biblatex package
 \usepackage{mathtools}
+\usepackage[final]{listings}
+
+\usepackage{xcolor}
+
+\definecolor{backcolour}{RGB}{245,245,245}
+\definecolor{commentcolour}{rgb}{0,0.6,0}
+\definecolor{stringcolour}{rgb}{0.58,0,0.82}
+\definecolor{white}{rgb}{1,1,1}
+
+
+
+\lstloadlanguages{Python}
+\lstdefinestyle{input}{
+    keywordstyle=\color{blue},
+    backgroundcolor=\color{backcolour},
+    stringstyle = \color{stringcolour},
+    commentstyle=\color{commentcolour},
+    basicstyle=\ttfamily\small,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=none,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+  }
+  \lstdefinestyle{output}{
+    backgroundcolor=\color{white},
+    keywordstyle = \color{black},
+    basicstyle=\ttfamily\small,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=none,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{
+    style = input,
+    language = Python
+}
+
 \addbibresource{dl-ref.bib} %Import the bibliography file
 
 \title{Deep Learning}
@@ -12,6 +62,11 @@
 \begin{document}
 
 \maketitle
+
+\newpage
+
+\tableofcontents
+\newpage
 
 \section{Introduction}
 
@@ -153,6 +208,11 @@ Two-dimensional discrete convolution is equivalent to reversing the row and colu
     \label{cross-correlation}
 \end{equation}
 
+\subsection{How Convolution is Used in Deep Neural Networks}
+
+Since one kernel can only extract one feature, each convolutional layer in a network uses multiple kernels. CNNs can be very computationally expensive to train, so we often skip over positions in the kernels to reduce training time. The width of the kernel and the size of the output can also be controlled by zero padding the input. Without zero padding, the output of each later would continue to shrink. The number of rows/columns per convolution is referred to as the stride of the convolution operation \cite{Goodfellow-et-al-2016}. % check this
+
+
 \subsection{The Convolutional Layer}
 
 The convolutional layers used in a CNN have three steps \cite{Goodfellow-et-al-2016}.
@@ -162,9 +222,185 @@ The convolutional layers used in a CNN have three steps \cite{Goodfellow-et-al-2
     \item Each linear activation function is run through a non-linear activation function, such as ReLU. This introduces non-linearity and gives the network more flexibility. % fact-check this
     \item A pooling function replaces the output at a given location with a summary statistic of nearby outputs. One common pooling function is the max pooling function, which provides the maximum output within a rectangular neighbourhood. Pooling is useful when we only care about whether a feature is present and not its specific location. It is also helpful when processing different-sized inputs.
 \end{enumerate}
+
+The output of each layer is then used as input to the next layer.
 % discrete case: \((a * b)_n = \sum\limits_{\substack{i,j \\ i+j=n}} a_i \cdot b_j\)
 
 \subsection{Image Classification Example}
+
+In this example, we will use convolutional neural networks to perform image classification on the Rock Paper Scissors dataset. 
+
+\lstinputlisting[firstline=14, lastline=21 ]{dl-scripts/cnn-ex1-colab.py}
+
+The dataset is only partitioned into training and test sets, so we set aside 30\% of the training set as a validation set.
+
+\lstinputlisting[firstline=25, lastline=30]{dl-scripts/cnn-ex1-colab.py}
+
+Next, we normalize by dividing by 255 and resize the images to 128x128. We also shuffle the training data to ensure that the model doesn't learn its order, and batch the training, validation, and test data.
+
+\lstinputlisting[firstline=34, lastline=44]{dl-scripts/cnn-ex1-colab.py}
+
+We start with a simple network with one comvolutional layer with 16 filters and a 3x3 kernel.
+
+\lstinputlisting[firstline=48,lastline=62]{dl-scripts/cnn-ex1-colab.py}
+
+Before fitting our model, we add an early stop mechanism to prevent overfitting.
+
+\lstinputlisting[firstline=66,lastline=75]{dl-scripts/cnn-ex1-colab.py}
+
+\begin{lstlisting}[style=output]
+Epoch 1/10
+56/56 [==============================] - 10s 85ms/step - loss: 1.0240 - accuracy: 0.7137 - val_loss: 0.2209 - val_accuracy: 0.9563
+Epoch 2/10
+56/56 [==============================] - 5s 61ms/step - loss: 0.0743 - accuracy: 0.9881 - val_loss: 0.0240 - val_accuracy: 0.9947
+Epoch 3/10
+56/56 [==============================] - 4s 37ms/step - loss: 0.0131 - accuracy: 0.9989 - val_loss: 0.0148 - val_accuracy: 0.9947
+Epoch 4/10
+56/56 [==============================] - 4s 37ms/step - loss: 0.0045 - accuracy: 1.0000 - val_loss: 0.0062 - val_accuracy: 0.9987
+Epoch 5/10
+56/56 [==============================] - 5s 58ms/step - loss: 0.0020 - accuracy: 1.0000 - val_loss: 0.0042 - val_accuracy: 1.0000
+Epoch 6/10
+56/56 [==============================] - 4s 38ms/step - loss: 0.0013 - accuracy: 1.0000 - val_loss: 0.0039 - val_accuracy: 1.0000
+Epoch 7/10
+56/56 [==============================] - 4s 38ms/step - loss: 0.0010 - accuracy: 1.0000 - val_loss: 0.0041 - val_accuracy: 0.9987
+Epoch 8/10
+53/56 [===========================>..] - ETA: 0s - loss: 8.3814e-04 - accuracy: 1.0000Restoring model weights from the end of the best epoch: 5.
+56/56 [==============================] - 5s 59ms/step - loss: 8.2481e-04 - accuracy: 1.0000 - val_loss: 0.0032 - val_accuracy: 0.9987
+Epoch 8: early stopping
+\end{lstlisting}
+
+Training accuracy of 100\% and validation accuracy of over 99\%? If something seems too good to be true, it probably is. Let's evaluate on the test data.
+
+\lstinputlisting[firstline=79,lastline=79]{dl-scripts/cnn-ex1-colab.py}
+
+\begin{lstlisting}[style=output]
+12/12 [==============================] - 1s 104ms/step - loss: 1.3345 - accuracy: 0.7151
+[1.3345420360565186, 0.7150537371635437] 
+\end{lstlisting}
+
+As expected, no such luck. What happens when we add another convolutional layer?
+
+\lstinputlisting[firstline=83,lastline=98]{dl-scripts/cnn-ex1-colab.py}
+
+\begin{lstlisting}[style=output]
+ Epoch 1/10
+ 56/56 [==============================] - 6s 43ms/step - loss: 1.4043 - accuracy: 0.5890 - val_loss: 0.4816 - val_accuracy: 0.9206
+ Epoch 2/10
+ 56/56 [==============================] - 5s 54ms/step - loss: 0.2150 - accuracy: 0.9552 - val_loss: 0.0609 - val_accuracy: 0.9881
+ Epoch 3/10
+ 56/56 [==============================] - 4s 38ms/step - loss: 0.0441 - accuracy: 0.9909 - val_loss: 0.0182 - val_accuracy: 0.9987
+ Epoch 4/10
+ 56/56 [==============================] - 4s 39ms/step - loss: 0.0143 - accuracy: 0.9977 - val_loss: 0.0076 - val_accuracy: 0.9987
+ Epoch 5/10
+ 56/56 [==============================] - 5s 60ms/step - loss: 0.0053 - accuracy: 0.9994 - val_loss: 0.0030 - val_accuracy: 1.0000
+ Epoch 6/10
+ 56/56 [==============================] - 4s 41ms/step - loss: 0.0022 - accuracy: 1.0000 - val_loss: 0.0019 - val_accuracy: 1.0000
+ Epoch 7/10
+ 56/56 [==============================] - 4s 39ms/step - loss: 0.0016 - accuracy: 1.0000 - val_loss: 0.0013 - val_accuracy: 1.0000
+ Epoch 8/10
+ 56/56 [==============================] - 5s 60ms/step - loss: 9.5238e-04 - accuracy: 1.0000 - val_loss: 0.0011 - val_accuracy: 1.0000
+ Epoch 9/10
+ 56/56 [==============================] - 4s 38ms/step - loss: 6.9435e-04 - accuracy: 1.0000 - val_loss: 8.4804e-04 - val_accuracy: 1.0000
+ Epoch 10/10
+ 56/56 [==============================] - 4s 38ms/step - loss: 5.3139e-04 - accuracy: 1.0000 - val_loss: 7.7833e-04 - val_accuracy: 1.0000
+
+\lstinputlisting[firstline=100,lastline=100]{dl-scripts/cnn-ex1-colab.py}
+
+\begin{lstlisting}[style=output]
+12/12 [==============================] - 0s 16ms/step - loss: 1.0663 - accuracy: 0.7634
+[1.0662583112716675, 0.7634408473968506]
+\end{lstlisting}
+
+An improvement, but still not amazing. Would a third convolutional layer help?
+
+\lstinputlisting[firstline=104,lastline=121]{dl-scripts/cnn-ex1-colab.py}
+
+
+\begin{lstlisting}[style=output]
+ Epoch 1/10
+ 56/56 [==============================] - 7s 44ms/step - loss: 0.6999 - accuracy: 0.7035 - val_loss: 0.1999 - val_accuracy: 0.9101
+ Epoch 2/10
+ 56/56 [==============================] - 4s 39ms/step - loss: 0.0600 - accuracy: 0.9864 - val_loss: 0.0188 - val_accuracy: 0.9934
+ Epoch 3/10
+ 56/56 [==============================] - 5s 53ms/step - loss: 0.0240 - accuracy: 0.9949 - val_loss: 0.0071 - val_accuracy: 1.0000
+ Epoch 4/10
+ 56/56 [==============================] - 4s 39ms/step - loss: 0.0022 - accuracy: 1.0000 - val_loss: 0.0011 - val_accuracy: 1.0000
+ Epoch 5/10
+ 56/56 [==============================] - 4s 41ms/step - loss: 7.2477e-04 - accuracy: 1.0000 - val_loss: 7.4349e-04 - val_accuracy: 1.0000
+ Epoch 6/10
+ 56/56 [==============================] - 5s 63ms/step - loss: 4.0359e-04 - accuracy: 1.0000 - val_loss: 3.2628e-04 - val_accuracy: 1.0000
+ Epoch 7/10
+ 52/56 [==========================>...] - ETA: 0s - loss: 2.2042e-04 - accuracy: 1.0000Restoring model weights from the end of the best epoch: 4.
+ 56/56 [==============================] - 4s 39ms/step - loss: 2.1410e-04 - accuracy: 1.0000 - val_loss: 3.2290e-04 - val_accuracy: 1.0000
+ Epoch 7: early stopping
+\end{lstlisting}
+
+\lstinputlisting[firstline=123,lastline=123]{dl-scripts/cnn-ex1-colab.py}
+
+\begin{lstlisting}[style=output]
+12/12 [==============================] - 0s 10ms/step - loss: 1.1395 - accuracy: 0.7930
+[1.1395031213760376, 0.7930107712745667]
+\end{lstlisting}
+
+A slight improvement. What about a fourth layer?
+
+\lstinputlisting[firstline=127,lastline=146]{dl-scripts/cnn-ex1-colab.py}
+
+\begin{lstlisting}[style=output]
+Epoch 1/10
+56/56 [==============================] - 6s 46ms/step - loss: 0.7071 - accuracy: 0.6604 - val_loss: 0.1421 - val_accuracy: 0.9563
+Epoch 2/10
+56/56 [==============================] - 5s 40ms/step - loss: 0.0583 - accuracy: 0.9853 - val_loss: 0.0080 - val_accuracy: 0.9987
+Epoch 3/10
+56/56 [==============================] - 4s 39ms/step - loss: 0.0057 - accuracy: 0.9983 - val_loss: 0.0020 - val_accuracy: 1.0000
+Epoch 4/10
+56/56 [==============================] - 4s 48ms/step - loss: 0.0026 - accuracy: 0.9989 - val_loss: 0.0017 - val_accuracy: 1.0000
+Epoch 5/10
+56/56 [==============================] - 5s 40ms/step - loss: 0.0038 - accuracy: 0.9994 - val_loss: 0.0136 - val_accuracy: 0.9921
+Epoch 6/10
+56/56 [==============================] - 4s 41ms/step - loss: 0.0018 - accuracy: 0.9994 - val_loss: 2.4979e-04 - val_accuracy: 1.0000
+Epoch 7/10
+56/56 [==============================] - 4s 43ms/step - loss: 1.2425e-04 - accuracy: 1.0000 - val_loss: 1.3199e-04 - val_accuracy: 1.0000
+Epoch 8/10
+56/56 [==============================] - 5s 39ms/step - loss: 9.3137e-05 - accuracy: 1.0000 - val_loss: 9.6794e-05 - val_accuracy: 1.0000
+Epoch 9/10
+54/56 [===========================>..] - ETA: 0s - loss: 7.5662e-05 - accuracy: 1.0000Restoring model weights from the end of the best epoch: 6.
+56/56 [==============================] - 4s 39ms/step - loss: 7.4308e-05 - accuracy: 1.0000 - val_loss: 7.7891e-05 - val_accuracy: 1.0000
+Epoch 9: early stopping
+\end{lstlisting}
+
+\lstinputlisting[firstline=148,lastline=148]{dl-scripts/cnn-ex1-colab.py}
+
+\begin{lstlisting}[style=output]
+12/12 [==============================] - 0s 10ms/step - loss: 0.1825 - accuracy: 0.9409
+[0.1824917197227478, 0.9408602118492126]
+\end{lstlisting}
+
+Now that we have reached the accuracy threshold, let's plot the learning curves.
+
+\lstinputlisting[firstline=152,lastline=167]{dl-scripts/cnn-ex1-colab.py}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale = 0.48]{dl-figures/cnn-ex-1-learning-curves.png}
+    \label{figure:cnn-ex-1-learning-curves}
+\end{figure}
+
+\lstinputlisting[firstline=169,lastline=203]{dl-scripts/cnn-ex1-colab.py}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale = 0.48]{dl-figures/cnn-ex-1-correct.png}
+    \label{figure:cnn-ex-1-learning-curves}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale = 0.48]{dl-figures/cnn-ex-1-incorrect.png}
+    \label{figure:cnn-ex-1-learning-curves}
+\end{figure}
+
+Look at the images that were classified incorrectly. It seems that the model's most significant weakness is misclassifying scissors as paper. Do you notice anything about these scissor images compared to the scissor and paper images in the correct predictions? How could the model potentially be improved?
 
 \section{Recurrent Neural Networks}
 

@@ -19,7 +19,7 @@ learning](https://arxiv.org/pdf/1603.07285)
 
 [Quantization Fundamentals with Hugging Face](https://www.deeplearning.ai/short-courses/quantization-fundamentals-with-hugging-face/) - course completed 21/05/2024
 
-[Quantization in Depth](https://www.deeplearning.ai/short-courses/quantization-in-depth/) - course in progress
+[Quantization in Depth](https://www.deeplearning.ai/short-courses/quantization-in-depth/) - course complete
 
 [Intro to Deep Learning](https://www.kaggle.com/learn/intro-to-deep-learning) - course for later
 
