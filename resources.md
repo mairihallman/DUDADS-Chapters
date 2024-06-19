@@ -4,6 +4,8 @@
 
 [Deep Learning](https://www.deeplearningbook.org/) - chapters 6, 9, 10, 14, 20
 
+[Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow, 3rd Edition](https://www.oreilly.com/library/view/hands-on-machine-learning/9781098125967/) - part 2
+
 [Probabilistic Machine Learning: An Introduction](https://probml.github.io/pml-book/book1.html) - chapters 14-16
 
 [Probabilistic Machine Learning: Advanced Topics](https://probml.github.io/pml-book/book2.html) - chapter 16 for sure, maybe 20, 21, 17
