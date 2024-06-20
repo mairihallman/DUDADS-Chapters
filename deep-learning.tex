@@ -162,7 +162,44 @@ The tensor train decomposition decomposes a tensor into a product of third-order
 
 % add representative equation, info on computation
 
-\section{Selecting A Network Architecture}
+\section{An Introduction to Deep Networks}
+
+% intro blah blah "In section 21.4.3, we introduced neural networks..."
+
+\subsection{Why Deep Networks} % see Probabilistic ML 13.2.5
+
+Think about how you study for a test. Do you attempt to learn everything in minute detail simultaneously? Unless you only have to learn a small amount of material, this is likely not a winning strategy. A better approach would be breaking the content down into sections, ensuring you understand the most important concepts, and, if time, memorizing tricky details.
+
+This example illustrates why, in the context of large networks with many nodes arranging the nodes into layers is preferrable to an extremely wide, shallow network.  Consider a network with one hidden layer of 100 nodes, and a second network with 10 layers of 10 nodes. The first network will attempt to learn everything about the dataset all at once, without any kind of hierarchical extraction of information. Given that neural networks were inspired by the human brain, it is unsurprising that this would not be a winning strategy.
+In the case of the second network, the use of multiple layers allows the model to concentrate first on more 
+
+\section{Training Deep Neural Networks} % doing hand-written rough notes first
+
+\subsection{Hyperparameter Tuning}
+
+\subsection{Activation Functions for Hidden Layers} % see Deep Learning 6.3; Probabilistic ML 13.2.3
+
+\subsection{Regularization} % see Deep Learning all 7.1, 7.6, maybe 7.7, 7.8, probably 7.9, 7.12; Probabilistic ML 13.5
+
+\subsubsection{\(L^2\) Regularization}
+
+\subsubsection{\(L^1\) Regularization}
+
+\subsubsection{Batch Normalization}
+
+\subsubsection{Layer Normalization}
+
+\subsubsection{Early Stop}
+
+\subsubsection{Weight Decay}
+
+\subsubsection{Dropout}
+
+\subsubsection{Unsupervised Pretraining}
+
+\subsubsection{Semi-Supervised Learning}
+
+\subsection{Optimization} % See Deep Learning all 8.3, 8.4, all 8.5, 8.7.1, 8.7.4
 
 \section{Convolutional Neural Networks}
 
