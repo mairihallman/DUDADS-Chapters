@@ -162,22 +162,72 @@ The tensor train decomposition decomposes a tensor into a product of third-order
 
 % add representative equation, info on computation
 
-\section{An Introduction to Deep Networks}
+\section{Architecture Design}
 
 % intro blah blah "In section 21.4.3, we introduced neural networks..."
 
 \subsection{Why Deep Networks} % see Probabilistic ML 13.2.5
 
-Think about how you study for a test. Do you attempt to learn everything in minute detail simultaneously? Unless you only have to learn a small amount of material, this is likely not a winning strategy. A better approach would be breaking the content down into sections, ensuring you understand the most important concepts, and, if time, memorizing tricky details.
+Deep networks can often approximate complex functions with far fewer nodes than a shallow network. This is because the number of linear regions in the network grows exponentially with the number of layers \cite{montufar2014}.
 
-This example illustrates why, in the context of large networks with many nodes arranging the nodes into layers is preferrable to an extremely wide, shallow network.  Consider a network with one hidden layer of 100 nodes, and a second network with 10 layers of 10 nodes. The first network will attempt to learn everything about the dataset all at once, without any kind of hierarchical extraction of information. Given that neural networks were inspired by the human brain, it is unsurprising that this would not be a winning strategy.
-In the case of the second network, the use of multiple layers allows the model to concentrate first on more 
+To illustrate, consider a network with 5 layers, each with 10 nodes for a total of 50 nodes. For the sake of this example, we will assume that each layer has one input. The number of linear regions that can be learned by this network is \(10^5\). For a single-layer network to learn \(10^5\) linear regions, it would require \(10^5\) nodes. 
+
+\subsection{Hidden Units and Activation Functions} % see Deep Learning 6.3; Probabilistic ML 13.2.3
+
+Different types of hidden units serve different purposes within deep networks. Most types of hidden units perform an affine  transformation on the layer's input, and then apply an activation function \(g(z)\) to the transformed inputs \cite{Goodfellow-et-al-2016}. If all activation functions within a deep network are linear, then the network reduces to a linear model \cite{pml1Book}. While linear activation functions can be useful for reducing the number of parameters in a model , the discussion surrounding hidden units and their activation functions within a deep network typically concerns non-linear units \cite{Goodfellow-et-al-2016}. 
+
+\subsubsection{ReLU}
+
+In modern deep networks, the default most commonly used activation function for hidden layer is the rectified linear unit, or ReLU activation function.
+
+\begin{equation}
+    a(z) = max(0, z)
+    \label{ReLU-activation}
+\end{equation}
+
+This is analagous to a linear activation function with negative inputs "turned off" \cite{pml1Book}. 
+
+Notice that this function isn't differentiable at zero. In theory, this should make ReLU useless for gradient-based learning. In practice, most deep networks don't achieve a loss of zero, so this typically isn't a problem.
+
+Variations of ReLU typically modify the slope for negative inputs \cite{Goodfellow-et-al-2016}. For a given input \(z_i\), this can be generalized as
+
+\begin{equation}
+    a(z,\alpha)_i = max(0, z_i) + \alpha_i min(0,z_i)
+    \label{generalization-ReLU}
+\end{equation}
+
+Several ReLU variations of this form are listed below.
+
+\paragraph{Absolute value rectification}\(\alpha = -1\); commonly used for image processing \cite{Goodfellow-et-al-2016}.
+
+\paragraph{Leaky ReLU}\(\alpha\) is a small positive value. Leaky ReLU is used in place of standard ReLU to prevent the "dying ReLUs" problem. Units using ReLU as an activation "die" when all of the inputs are non-positive. All negative inputs results in all zero outputs, and the weights can't be updated \cite{hands-on-ml}.
+
+\paragraph{Parametric Leaky ReLU}Leaky ReLU where \(alpha\) is learned by the model \cite{hands-on-ml}.
+
+\subsubsection{The Sigmoid and Hyperbolic Tangent Functions}
+
+In the early days of deep learning, two commonly used activation functions for hidden units were the sigmoid function
+
+\begin{equation}
+    a(z) = \sigma (z) = \frac{1}{1 + e^{-z}}
+    \label{sigmoid-activation}
+\end{equation}
+
+and the hyperbolic tangent function
+
+\begin{equation}
+    a(z) = tanh(z)
+    \label{tanh-activation}
+\end{equation}
+
+These activation functions are no longer recommended for hidden units because they saturate. The sigmoid function saturates at zero and one, and the hyperbolic tangent function saturates at  negative one and one. Saturation is problematic because it leads to the gradient of a layer's output with respect to its input. Recall what we know about backpropagation from section 21.4.3. If the gradient is close to zero, the weights will update very slowly, if at all. Without a gradient, the model can't converge to a solution. This phenomenon is known as the vanishing gradient problem.
+
+
 
 \section{Training Deep Neural Networks} % doing hand-written rough notes first
 
 \subsection{Hyperparameter Tuning}
 
-\subsection{Activation Functions for Hidden Layers} % see Deep Learning 6.3; Probabilistic ML 13.2.3
 
 \subsection{Regularization} % see Deep Learning all 7.1, 7.6, maybe 7.7, 7.8, probably 7.9, 7.12; Probabilistic ML 13.5
 
