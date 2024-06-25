@@ -249,9 +249,32 @@ Tensorflow offers functionality for \(\it{L}^2\) weight decay \(\it{L}^1\) weigh
 
 \lstinputlisting{dl-scripts/documentation/weight-decay.py}
 
-\subsubsection{Early Stop} % DL 7.8
+\subsubsection{Early Stopping} % DL 7.8
+
+If a model is trained for too many epochs, the validation set error will reach a minumum at the optimal number of epochs, and then begin to increase as a result of overfitting. This can be prevented by implementing early stopping. When early stopping is used, a copy of the model's parameters is only saved at the end of a training iteration if the validation loss improves \cite{Goodfellow-et-al-2016}. Training stops automatically if the validation loss hasn't decreased, or has only decreased by a very small amount, after a given number of training loops.
+
+Early stopping can be implemented in Tensorflow as follows.
+
+\lstinputlisting{dl-scripts/documentation/early-stop.py}
 
 \subsubsection{Dropout} % DL 7.12, PML 13.5.4
+
+Dropout is a regularization technique that randomly sets a given proportion of the models weights to zero after each gradient step. This means that for each epoch, a "different" model is being trained \cite{Srivastava14}. This is similar to bagging, but instead of being independent, each model's weights are a subset of the full network's weights \cite{Goodfellow-et-al-2016}.
+
+Dropout helps prevent overfitting by stopping units from becoming ``lazy". Consider a hockey team consisting of a few star players, many average players, and some weak players. Typically, the best players get the most playing time. The downside of this is that the others get less practice, and therefore don't improve at the same rate. If, for each game, a certain number of players were randomly selected and told to stay hom, the rest of the team would have to adapt to play without those players. In this scenario, the team is less at risk of becoming dependent on a few superstars, and the benchwarmers get a chance to improve and contribute. In this example, the team is the model, and each player is a unit. By randomly "dropping out" some players, the others get more practice and become better assets to the team \cite{hands-on-ml}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale = 0.24]{dl-figures/thanos-dropout-meme.jpg}
+    \caption{Consider this meme from user @mlinterview on X. In the Marvel series, Thanos is a villain whose goal is to make half of all living organisms in the universe disappear. Those who disappear are randomly selected. While Thanon's motivations are not related to regularization, do you think this would force the remaining life forms to adapt for the better? Why or why not?}
+    \label{figure:thanos-dropour-meme}
+\end{figure}
+
+Like Thanos, we can dropout in Tensorflow (note that dropping out 50\% of the weights is very excessive and not advised)\cite{tensorflow2015-whitepaper}.
+
+\FloatBarrier
+
+\lstinputlisting{dl-scripts/documentation/dropout.py}
 
 % \subsubsection{Unsupervised Pretraining} idk where to put this
 
