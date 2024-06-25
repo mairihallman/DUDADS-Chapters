@@ -7,6 +7,7 @@
 *.bcf
 *.blg
 *.run.xml
+*.out
 dudads-chapters.code-workspace
 .vscode/
 .conda/
