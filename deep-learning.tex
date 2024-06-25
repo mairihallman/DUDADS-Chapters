@@ -4,6 +4,7 @@
 \usepackage{amsmath} % For mathematical symbols and environments
 \usepackage{biblatex} %Imports biblatex package
 \usepackage{mathtools}
+\usepackage{physics}
 \usepackage[final]{listings}
 
 \usepackage{xcolor}
@@ -231,25 +232,34 @@ These activation functions are no longer recommended for hidden units because th
 
 \subsection{Regularization} % see Deep Learning all 7.1, 7.6, maybe 7.7, 7.8, probably 7.9, 7.12; Probabilistic ML 13.5
 
-\subsubsection{\(L^2\) Regularization}
+\subsubsection{Weight Decay} % L2: DL 7.1.1, PML 13.5.2 and L1: DL 7.1.2
 
-\subsubsection{\(L^1\) Regularization}
+Recall ridge and LASSO regression from section 20.2.4. When generalized beyond linear models, these regularization techniques are known respectively as \(\it{L}^2\) and \(\it{L}^1\) regularization. In the context of neural networks, these methods are both commonly referred to as weight decay. Weight decay applies a regularization term to the objective function \(J(\vb*{w})\). The regularized objective function \(\tilde{J}(\vb*{w})\) is 
+
+\begin{equation}
+    \tilde{J}(\vb*{w}) = J(\vb*{w}) +\frac{\lambda}{2}\norm{w}^2_2
+    \label{L2-reg}
+\end{equation} for \(\it{L}^2\) weight decay, and 
+
+\begin{equation}
+    \tilde{J}(\vb*{w}) = J(\vb*{w}) +\lambda\norm{w}_1
+    \label{L1-reg}
+\end{equation} for \(\it{L}^1\) weight decay, where \(\lambda\) is a hyperparameter.
+
+\subsubsection{Early Stop} % DL 7.8
+
+\subsubsection{Dropout} % DL 7.12, PML 13.5.4
+
+% \subsubsection{Unsupervised Pretraining} idk where to put this
+
+\subsubsection{Semi-Supervised Learning} % DL 7.6
+
+\subsection{Optimization} % See Deep Learning all 8.3, 8.4, all 8.5, 8.7.1, 8.7.4
 
 \subsubsection{Batch Normalization}
 
 \subsubsection{Layer Normalization}
 
-\subsubsection{Early Stop}
-
-\subsubsection{Weight Decay}
-
-\subsubsection{Dropout}
-
-\subsubsection{Unsupervised Pretraining}
-
-\subsubsection{Semi-Supervised Learning}
-
-\subsection{Optimization} % See Deep Learning all 8.3, 8.4, all 8.5, 8.7.1, 8.7.4
 
 \section{Convolutional Neural Networks}
 
