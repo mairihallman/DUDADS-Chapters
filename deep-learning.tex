@@ -2,9 +2,11 @@
 \usepackage{graphicx} % Required for inserting images
 \usepackage[margin=2.54cm]{geometry}
 \usepackage{amsmath} % For mathematical symbols and environments
-\usepackage{biblatex} %Imports biblatex package
+\usepackage{hyperref}
+\usepackage[backend=biber, style=numeric]{biblatex} %Imports biblatex package
 \usepackage{mathtools}
 \usepackage{physics}
+\usepackage{placeins}
 \usepackage[final]{listings}
 
 \usepackage{xcolor}
@@ -223,12 +225,9 @@ and the hyperbolic tangent function
 
 These activation functions are no longer recommended for hidden units because they saturate. The sigmoid function saturates at zero and one, and the hyperbolic tangent function saturates at  negative one and one. Saturation is problematic because it leads to the gradient of a layer's output with respect to its input. Recall what we know about backpropagation from section 21.4.3. If the gradient is close to zero, the weights will update very slowly, if at all. Without a gradient, the model can't converge to a solution. This phenomenon is known as the vanishing gradient problem.
 
-
-
 \section{Training Deep Neural Networks} % doing hand-written rough notes first
 
 \subsection{Hyperparameter Tuning}
-
 
 \subsection{Regularization} % see Deep Learning all 7.1, 7.6, maybe 7.7, 7.8, probably 7.9, 7.12; Probabilistic ML 13.5
 
@@ -245,6 +244,10 @@ Recall ridge and LASSO regression from section 20.2.4. When generalized beyond l
     \tilde{J}(\vb*{w}) = J(\vb*{w}) +\lambda\norm{w}_1
     \label{L1-reg}
 \end{equation} for \(\it{L}^1\) weight decay, where \(\lambda\) is a hyperparameter.
+
+Tensorflow offers functionality for \(\it{L}^2\) weight decay \(\it{L}^1\) weight decay, and using both together \cite{tensorflow2015-whitepaper}.
+
+\lstinputlisting{dl-scripts/documentation/weight-decay.py}
 
 \subsubsection{Early Stop} % DL 7.8
 
@@ -291,7 +294,7 @@ One of the most common applications of CNNs is in digital image processing. In t
     \label{2D-discrete-convolution}
 \end{equation}
 
-Since convolution is commutative, equation \ref{flipped-2D-discrete-convolution} also holds. 
+Since convolution is commutative, the following also holds. 
 
 \begin{equation}
     s(i,j) = (y*x)(i,j)\sum\limits_{\substack{m}}\sum\limits_{\substack{n}} x(i-m,j-n)y(i,j)
@@ -488,14 +491,16 @@ Now that we have reached the accuracy threshold, let's plot the learning curves.
 \begin{figure}[h]
     \centering
     \includegraphics[scale = 0.48]{dl-figures/cnn-ex-1-correct.png}
-    \label{figure:cnn-ex-1-learning-curves}
+    \label{figure:cnn-ex-1-correct}
 \end{figure}
 
 \begin{figure}[h]
     \centering
     \includegraphics[scale = 0.48]{dl-figures/cnn-ex-1-incorrect.png}
-    \label{figure:cnn-ex-1-learning-curves}
+    \label{figure:cnn-ex-1-incorrect}
 \end{figure}
+
+\FloatBarrier
 
 Look at the images that were classified incorrectly. It seems that the model's most significant weakness is misclassifying scissors as paper. Do you notice anything about these scissor images compared to the scissor and paper images in the correct predictions? How could the model potentially be improved?
 
@@ -517,6 +522,10 @@ Look at the images that were classified incorrectly. It seems that the model's m
 
 % quanto library
 
+\newpage
 
+\addcontentsline{toc}{section}{References}
+
+\printbibliography
 
 \end{document}
