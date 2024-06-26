@@ -165,21 +165,18 @@ The tensor train decomposition decomposes a tensor into a product of third-order
 
 % add representative equation, info on computation
 
-\section{Architecture Design}
 
-% intro blah blah "In section 21.4.3, we introduced neural networks..."
-
-\subsection{Why Deep Networks} % see Probabilistic ML 13.2.5
+\section{Why Deep Networks} % see Probabilistic ML 13.2.5
 
 Deep networks can often approximate complex functions with far fewer nodes than a shallow network. This is because the number of linear regions in the network grows exponentially with the number of layers \cite{montufar2014}.
 
 To illustrate, consider a network with 5 layers, each with 10 nodes for a total of 50 nodes. For the sake of this example, we will assume that each layer has one input. The number of linear regions that can be learned by this network is \(10^5\). For a single-layer network to learn \(10^5\) linear regions, it would require \(10^5\) nodes. 
 
-\subsection{Hidden Units and Activation Functions} % see Deep Learning 6.3; Probabilistic ML 13.2.3
+\section{Hidden Units and Activation Functions} % see Deep Learning 6.3; Probabilistic ML 13.2.3
 
 Different types of hidden units serve different purposes within deep networks. Most types of hidden units perform an affine  transformation on the layer's input, and then apply an activation function \(g(z)\) to the transformed inputs \cite{Goodfellow-et-al-2016}. If all activation functions within a deep network are linear, then the network reduces to a linear model \cite{pml1Book}. While linear activation functions can be useful for reducing the number of parameters in a model , the discussion surrounding hidden units and their activation functions within a deep network typically concerns non-linear units \cite{Goodfellow-et-al-2016}. 
 
-\subsubsection{ReLU}
+\subsection{ReLU}
 
 In modern deep networks, the default most commonly used activation function for hidden layer is the rectified linear unit, or ReLU activation function.
 
@@ -201,13 +198,13 @@ Variations of ReLU typically modify the slope for negative inputs \cite{Goodfell
 
 Several ReLU variations of this form are listed below.
 
-\paragraph{Absolute value rectification}\(\alpha = -1\); commonly used for image processing \cite{Goodfellow-et-al-2016}.
+\paragraph{Absolute Value Rectification}\(\alpha = -1\); commonly used for image processing \cite{Goodfellow-et-al-2016}.
 
 \paragraph{Leaky ReLU}\(\alpha\) is a small positive value. Leaky ReLU is used in place of standard ReLU to prevent the "dying ReLUs" problem. Units using ReLU as an activation "die" when all of the inputs are non-positive. All negative inputs results in all zero outputs, and the weights can't be updated \cite{hands-on-ml}.
 
 \paragraph{Parametric Leaky ReLU}Leaky ReLU where \(alpha\) is learned by the model \cite{hands-on-ml}.
 
-\subsubsection{The Sigmoid and Hyperbolic Tangent Functions}
+\subsection{The Sigmoid and Hyperbolic Tangent Functions}
 
 In the early days of deep learning, two commonly used activation functions for hidden units were the sigmoid function
 
@@ -225,13 +222,15 @@ and the hyperbolic tangent function
 
 These activation functions are no longer recommended for hidden units because they saturate. The sigmoid function saturates at zero and one, and the hyperbolic tangent function saturates at  negative one and one. Saturation is problematic because it leads to the gradient of a layer's output with respect to its input. Recall what we know about backpropagation from section 21.4.3. If the gradient is close to zero, the weights will update very slowly, if at all. Without a gradient, the model can't converge to a solution. This phenomenon is known as the vanishing gradient problem.
 
-\section{Training Deep Neural Networks} % doing hand-written rough notes first
+\section{Weight Initialization}
 
-\subsection{Hyperparameter Tuning}
+\subsection{Xavier/Glorot Initialzation}
 
-\subsection{Regularization} % see Deep Learning all 7.1, 7.6, maybe 7.7, 7.8, probably 7.9, 7.12; Probabilistic ML 13.5
+\subsection{Le}
 
-\subsubsection{Weight Decay} % L2: DL 7.1.1, PML 13.5.2 and L1: DL 7.1.2
+\section{Regularization} % see Deep Learning all 7.1, 7.6, maybe 7.7, 7.8, probably 7.9, 7.12; Probabilistic ML 13.5
+
+\subsection{Weight Decay} % L2: DL 7.1.1, PML 13.5.2 and L1: DL 7.1.2
 
 Recall ridge and LASSO regression from section 20.2.4. When generalized beyond linear models, these regularization techniques are known respectively as \(\it{L}^2\) and \(\it{L}^1\) regularization. In the context of neural networks, these methods are both commonly referred to as weight decay. Weight decay applies a regularization term to the objective function \(J(\vb*{w})\). The regularized objective function \(\tilde{J}(\vb*{w})\) is 
 
@@ -249,7 +248,7 @@ Tensorflow offers functionality for \(\it{L}^2\) weight decay \(\it{L}^1\) weigh
 
 \lstinputlisting{dl-scripts/documentation/weight-decay.py}
 
-\subsubsection{Early Stopping} % DL 7.8
+\subsection{Early Stopping} % DL 7.8
 
 If a model is trained for too many epochs, the validation set error will reach a minumum at the optimal number of epochs, and then begin to increase as a result of overfitting. This can be prevented by implementing early stopping. When early stopping is used, a copy of the model's parameters is only saved at the end of a training iteration if the validation loss improves \cite{Goodfellow-et-al-2016}. Training stops automatically if the validation loss hasn't decreased, or has only decreased by a very small amount, after a given number of training loops.
 
@@ -257,7 +256,7 @@ Early stopping can be implemented in Tensorflow as follows.
 
 \lstinputlisting{dl-scripts/documentation/early-stop.py}
 
-\subsubsection{Dropout} % DL 7.12, PML 13.5.4
+\subsection{Dropout} % DL 7.12, PML 13.5.4
 
 Dropout is a regularization technique that randomly sets a given proportion of the models weights to zero after each gradient step. This means that for each epoch, a "different" model is being trained \cite{Srivastava14}. This is similar to bagging, but instead of being independent, each model's weights are a subset of the full network's weights \cite{Goodfellow-et-al-2016}.
 
@@ -274,20 +273,33 @@ Like Thanos, we can dropout in Tensorflow (note that dropping out 50\% of the we
 
 \FloatBarrier
 
+\subsection{Batch Normalization}
+
 \lstinputlisting{dl-scripts/documentation/dropout.py}
 
-\subsection{Optimization} % See Deep Learning all 8.3, 8.4, all 8.5, 8.7.1, 8.7.4
+\section{Variants of Stochastic Gradient Descent} % See Deep Learning all 8.3, 8.4, all 8.5, 8.7.1, 8.7.4
 
-\subsection{Optimization Algorithms}
+In section 21.4.3, we introduced stochastic gradient descent. Below are some common variants of SGD.
 
-\subsubsection{Batch Normalization}
+\subsection{Momentum} % DL 8.3.2
 
-\subsection{Dealing with Unlabelled Data}
+\subsection{Nesterov Momentum}
 
-\subsubsection{Unsupervised Pretraining}
+% adaptive learning rate algorithms start here
 
-\subsubsection{Semi-Supervised Learning} % DL 7.6
+\subsection{AdaGrad} % DL 8.5.1
 
+\subsection{Adadelta} % need to find source
+
+\subsection{RMSProp} % DL 8.5.2
+
+\subsection{Adam} % DL 8.5.3
+
+\section{Dealing with Unlabelled Data}
+
+\subsection{Unsupervised Pretraining}
+
+\subsection{Semi-Supervised Learning} % DL 7.6
 
 \section{Convolutional Neural Networks}
 
