@@ -1,0 +1,79 @@
+{
+  "builder_name": "json",
+  "citation": "",
+  "config_name": "default",
+  "dataset_name": "json",
+  "dataset_size": 614010,
+  "description": "",
+  "download_checksums": {
+    "C:/Users/mairi/code/aimo-contest/prompts-train.json": {
+      "num_bytes": 504770,
+      "checksum": null
+    },
+    "C:/Users/mairi/code/aimo-contest/prompts-val.json": {
+      "num_bytes": 132451,
+      "checksum": null
+    }
+  },
+  "download_size": 637221,
+  "features": {
+    "input_ids": {
+      "feature": {
+        "dtype": "int32",
+        "_type": "Value"
+      },
+      "_type": "Sequence"
+    },
+    "attention_mask": {
+      "feature": {
+        "dtype": "int8",
+        "_type": "Value"
+      },
+      "_type": "Sequence"
+    },
+    "offset_mapping": {
+      "feature": {
+        "feature": {
+          "dtype": "int64",
+          "_type": "Value"
+        },
+        "_type": "Sequence"
+      },
+      "_type": "Sequence"
+    },
+    "overflow_to_sample_mapping": {
+      "dtype": "int64",
+      "_type": "Value"
+    },
+    "labels": {
+      "feature": {
+        "dtype": "int64",
+        "_type": "Value"
+      },
+      "_type": "Sequence"
+    }
+  },
+  "homepage": "",
+  "license": "",
+  "size_in_bytes": 1251231,
+  "splits": {
+    "train": {
+      "name": "train",
+      "num_bytes": 486361,
+      "num_examples": 414,
+      "dataset_name": "json"
+    },
+    "val": {
+      "name": "val",
+      "num_bytes": 127649,
+      "num_examples": 104,
+      "dataset_name": "json"
+    }
+  },
+  "version": {
+    "version_str": "0.0.0",
+    "major": 0,
+    "minor": 0,
+    "patch": 0
+  }
+}
