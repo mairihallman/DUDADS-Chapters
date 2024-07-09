@@ -5,13 +5,6 @@
 	publisher    = {MIT Press},
 	url          = {http://www.deeplearningbook.org}
 }
-@book{pml1Book,
-	title        = {Probabilistic Machine Learning: An Introduction},
-	author       = {Kevin P. Murphy},
-	year         = 2022,
-	publisher    = {MIT Press},
-	url          = {probml.ai}
-}
 @book{hands-on-ml,
 	title        = {Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow, Third Edition},
 	author       = {Aur{\'{e}}lien G{\'{e}}ron},
@@ -26,14 +19,13 @@
 	archiveprefix = {arXiv},
 	primaryclass = {id='stat.ML' full\_name='Machine Learning' is\_active=True alt\_name=None in\_archive='stat' is\_general=False description='Covers machine learning papers (supervised, unsupervised, semi-supervised learning, graphical models, reinforcement learning, bandits, high dimensional inference, etc.) with a statistical or theoretical grounding'}
 }
-@misc{tensorflow2015-whitepaper,
-	title        = {TensorFlow: Large-Scale Machine Learning on Heterogeneous Systems},
-	author       = {Mart{\'i}n Abadi and Paul Barham and Jianmin Chen and Zhifeng Chen and Andy Davis and Jeffrey Dean and Matthieu Devin and Sanjay Ghemawat and Geoffrey Irving and Michael Isard and Manjunath Kudlur and Josh Levenberg and Rajat Monga and Sherry Moore and Derek G. Murray and Benoit Steiner and Paul Tucker and Vijay Vasudevan and Pete Warden and Martin Wicke and Yuan Yu and Xiaoqiang Zheng},
-	year         = 2015,
-	url          = {https://www.tensorflow.org/},
-	note         = {Software available from tensorflow.org}
+@book{pml1book,
+	title        = {Probabilistic Machine Learning: An Introduction},
+	author       = {Kevin P. Murphy},
+	year         = 2022,
+	publisher    = {MIT Press},
+	url          = {probml.ai}
 }
-
 @article{Srivastava14,
 	title        = {Dropout: A Simple Way to Prevent Neural Networks from Overfitting},
 	author       = {Nitish Srivastava and Geoffrey Hinton and Alex Krizhevsky and Ilya Sutskever and Ruslan Salakhutdinov},
@@ -44,3 +36,23 @@
 	pages        = {1929--1958},
 	url          = {http://jmlr.org/papers/v15/srivastava14a.html}
 }
+@misc{tensorflow2015-whitepaper,
+	title        = {TensorFlow: Large-Scale Machine Learning on Heterogeneous Systems},
+	author       = {Mart{\'i}n Abadi and Paul Barham and Jianmin Chen and Zhifeng Chen and Andy Davis and Jeffrey Dean and Matthieu Devin and Sanjay Ghemawat and Geoffrey Irving and Michael Isard and Manjunath Kudlur and Josh Levenberg and Rajat Monga and Sherry Moore and Derek G. Murray and Benoit Steiner and Paul Tucker and Vijay Vasudevan and Pete Warden and Martin Wicke and Yuan Yu and Xiaoqiang Zheng},
+	year         = 2015,
+	url          = {https://www.tensorflow.org/},
+	note         = {Software available from tensorflow.org}
+}
+
+@inproceedings{sutskever13,
+	title        = {On the importance of initialization and momentum in deep learning},
+	author       = {Sutskever, Ilya and Martens, James and Dahl, George and Hinton, Geoffrey},
+	year         = 2013,
+	booktitle    = {Proceedings of the 30th International Conference on International Conference on Machine Learning - Volume 28},
+	location     = {Atlanta, GA, USA},
+	publisher    = {JMLR.org},
+	series       = {ICML'13},
+	pages        = {III–1139–III–1147},
+	abstract     = {Deep and recurrent neural networks (DNNs and RNNs respectively) are powerful models that were considered to be almost impossible to train using stochastic gradient descent with momentum. In this paper, we show that when stochastic gradient descent with momentum uses a well-designed random initialization and a particular type of slowly increasing schedule for the momentum parameter, it can train both DNNs and RNNs (on datasets with long-term dependencies) to levels of performance that were previously achievable only with Hessian-Free optimization. We find that both the initialization and the momentum are crucial since poorly initialized networks cannot be trained with momentum and well-initialized networks perform markedly worse when the momentum is absent or poorly tuned.Our success training these models suggests that previous attempts to train deep and recurrent neural networks from random initializations have likely failed due to poor initialization schemes. Furthermore, carefully tuned momentum methods suffice for dealing with the curvature issues in deep and recurrent network training objectives without the need for sophisticated second-order methods.}
+}
+

@@ -3,7 +3,7 @@
 % \usepackage[margin=2.54cm]{geometry}
 \usepackage{amsmath} % For mathematical symbols and environments
 \usepackage{hyperref}
-\usepackage[backend=biber, style=numeric]{biblatex} %Imports biblatex package
+\usepackage[backend=biber, style=numeric, citestyle=numeric]{biblatex} %Imports biblatex package
 \usepackage{mathtools}
 \usepackage{physics}
 \usepackage{placeins}
@@ -36,6 +36,7 @@
     showtabs=false,                  
     tabsize=2
   }
+  
   \lstdefinestyle{output}{
     backgroundcolor=\color{white},
     keywordstyle = \color{black},
@@ -61,6 +62,8 @@
 \title{Deep Learning}
 \author{Mairi Hallman}
 \date{May 2024}
+
+
 
 \begin{document}
 
@@ -174,7 +177,7 @@ To illustrate, consider a network with 5 layers, each with 10 nodes for a total 
 
 \section{Hidden Units and Activation Functions} % see Deep Learning 6.3; Probabilistic ML 13.2.3
 
-Different types of hidden units serve different purposes within deep networks. Most types of hidden units perform an affine  transformation on the layer's input, and then apply an activation function \(g(z)\) to the transformed inputs \cite{Goodfellow-et-al-2016}. If all activation functions within a deep network are linear, then the network reduces to a linear model \cite{pml1Book}. While linear activation functions can be useful for reducing the number of parameters in a model , the discussion surrounding hidden units and their activation functions within a deep network typically concerns non-linear units \cite{Goodfellow-et-al-2016}. 
+Different types of hidden units serve different purposes within deep networks. Most types of hidden units perform an affine  transformation on the layer's input, and then apply an activation function \(g(z)\) to the transformed inputs \cite{Goodfellow-et-al-2016}. If all activation functions within a deep network are linear, then the network reduces to a linear model \cite{pml1book}. While linear activation functions can be useful for reducing the number of parameters in a model , the discussion surrounding hidden units and their activation functions within a deep network typically concerns non-linear units \cite{Goodfellow-et-al-2016}. 
 
 \subsection{ReLU}
 
@@ -185,7 +188,7 @@ In modern deep networks, the default most commonly used activation function for 
     \label{ReLU-activation}
 \end{equation}
 
-This is analagous to a linear activation function with negative inputs "turned off" \cite{pml1Book}. 
+This is analagous to a linear activation function with negative inputs "turned off" \cite{pml1book}. 
 
 Notice that this function isn't differentiable at zero. In theory, this should make ReLU useless for gradient-based learning. In practice, most deep networks don't achieve a loss of zero, so this typically isn't a problem.
 
@@ -283,7 +286,35 @@ In section 21.4.3, we introduced stochastic gradient descent. Below are some com
 
 \subsection{Momentum} % DL 8.3.2
 
+A significant drawback of SGD is that it can be very slow to converge to an optimal solution. SGD with momentum helps address this by adding a weighted moving average of the past gradients. This allows the algorithm to converge more quickly when sequential gradients move in the same direction, and to slow down if there is a sudden change \cite{pml1book}. 
+
+The momentum algorithm is implemented as follows. Here, \(m_t\) is the momentum, \(\eta\) is the learning rate, \(g_{t-1}\) is the gradient at previous output, and \(\theta_t\) is the output. \(beta\) is the momentum hyperparamenter, which controls the exponential decay of the weights of past gradients. Common values of \(\beta\) are \(0.5\), \(0.9\), and \(0.99\) \cite{pml1book}
+
+% \eta or \eta_t ?
+
+
+\begin{align*}
+    m_t &= \beta m_{t-1} + g_{t-1} \\
+    \theta_t &= \theta_{t-1} - \eta m_t
+\end{align*}
+
+
+Some resources give a different set of formulas for optimization with momentum. Note that the following are equivalent when \(m_1 = 0\).
+
+\begin{align*}
+    m_t &= \beta m_{t-1} - \eta g_{t-1} \\
+    \theta_t &= \theta_{t-1} + m_t
+\end{align*}
+
 \subsection{Nesterov Momentum}
+
+An improved variant of the momentum algorithm was introduced in 2013 \cite{sutskever13}. This version, known as Nesterov momentum, uses the gradient at \(\theta_{t-1} + \beta m_{t-1}\) instead of at \(\theta{t-1}\). This can be thought of as an "extrapolation" step. Instead of measuring at the previous output, we are assuming that the algorithm will continue to converge slightly ahead of this output with respect to the momentum. This allows for faster convergence.
+
+\begin{align}
+    g_{t} &= \grad \cal L(\theta_t +\beta m_t) \\
+    m_{t+1} &= \beta m_{t} - \eta g_{t-1} \\
+    \theta_{t+1} = \theta_t + m_{t+1}
+\end{align}
 
 % adaptive learning rate algorithms start here
 
