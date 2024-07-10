@@ -288,51 +288,70 @@ In section 21.4.3, we introduced stochastic gradient descent. Below are some com
 
 A significant drawback of SGD is that it can be very slow to converge to an optimal solution. SGD with momentum helps address this by adding a weighted moving average of the past gradients. This allows the algorithm to converge more quickly when sequential gradients move in the same direction, and to slow down if there is a sudden change \cite{pml1book}. 
 
-The momentum algorithm is implemented as follows. Here, \(m_t\) is the momentum, \(\eta\) is the learning rate, \(g_{t-1}\) is the gradient at previous output, and \(\theta_t\) is the output. \(beta\) is the momentum hyperparamenter, which controls the exponential decay of the weights of past gradients. Common values of \(\beta\) are \(0.5\), \(0.9\), and \(0.99\) \cite{pml1book}
+The momentum algorithm is implemented as follows. Here, \(\vb*{m}_t\) is the momentum, \(\eta\) is the learning rate, \(\vb*{g}_{t-1}\) is the gradient at previous output, and \(\vb*{\theta}_t\) is the output. \(beta\) is the momentum hyperparamenter, which controls the exponential decay of the weights of past gradients. Common values of \(\beta\) are \(0.5\), \(0.9\), and \(0.99\) \cite{pml1book}
 
 % \eta or \eta_t ?
 
 
 \begin{align*}
-    m_t &= \beta m_{t-1} + g_{t-1} \\
-    \theta_t &= \theta_{t-1} - \eta m_t
+    \vb*{m}_t &= \beta \vb*{m}_{t-1} + \vb*{g}_{t-1} \\
+    \vb*{\theta}_t &= \vb*{\theta}_{t-1} - \eta \vb*{m}_t
 \end{align*}
 
 
-Some resources give a different set of formulas for optimization with momentum. Note that the following are equivalent when \(m_1 = 0\).
+Some resources give a different set of formulas for optimization with momentum. Note that the following are equivalent when \(\vb*{m}_1 = 0\).
 
 \begin{align*}
-    m_t &= \beta m_{t-1} - \eta g_{t-1} \\
-    \theta_t &= \theta_{t-1} + m_t
+    \vb*{m}_t &= \beta \vb*{m}_{t-1} - \eta \vb*{g}_{t-1} \\
+    \vb*{\theta}_t &= \vb*{\theta}_{t-1} + \vb*{m}_t
 \end{align*}
 
 \subsection{Nesterov Momentum}
 
-An improved variant of the momentum algorithm was introduced in 2013 \cite{sutskever13}. This version, known as Nesterov momentum, uses the gradient at \(\theta_{t-1} + \beta m_{t-1}\) instead of at \(\theta{t-1}\). This can be thought of as an "extrapolation" step. Instead of measuring at the previous output, we are assuming that the algorithm will continue to converge slightly ahead of this output with respect to the momentum. This allows for faster convergence.
+An improved variant of the momentum algorithm was introduced in 2013 \cite{sutskever13}. This version, known as Nesterov momentum, uses the gradient at \(\vb*{\theta}_{t-1} + \beta \vb*{m}_{t-1}\) instead of at \(\theta{t-1}\). This can be thought of as an "extrapolation" step. Instead of measuring at the previous output, we are assuming that the algorithm will continue to converge slightly ahead of this output with respect to the momentum. This allows for faster convergence.
 
 \begin{align*}
-    g_{t} &= \nabla \mathcal{L} (\theta_{t} + \beta m_{t}) \\
-    m_{t+1} &= \beta m_{t} - \eta g_{t-1} \\
-    \theta_{t+1} &= \theta_t + m_{t+1}
+    \vb*{g}_{t} &= \nabla \mathcal{L} (\vb*{\theta}_{t} + \beta \vb*{m}_{t}) \\
+    \vb*{m}_{t+1} &= \beta \vb*{m}_{t} - \eta \vb*{g}_{t-1} \\
+    \vb*{\theta}_{t+1} &= \vb*{\theta}_t + \vb*{m}_{t+1}
 \end{align*}
 
 % adaptive learning rate algorithms start here
 
 \subsection{AdaGrad} % DL 8.5.1
 
-Until now, our discussion of learning algorithms has concerned algorithms with static learning rates. The AdaGrad algorithm modifies the learning rates of the model parameters by dividing them by the square root of the sum of the past gradients. This speeds up convergence when the gradient is less extreme. 
+Until now, our discussion of learning algorithms has concerned algorithms with static learning rates. The AdaGrad algorithm modifies the learning rates of the model parameters by dividing them by the square root of the Kronecker product of the vector of past gradients with itself. This speeds up convergence when the gradient is less extreme. 
 
-The algorithm is provided below. The variable \(r\) is the gradient accumulation variable, with \(r_1 = 0\). \(\eta\) is the global learning rate, and \(\delta\) is a very small value to prevent division by \(0\).
+The algorithm is provided below. The variable \(s\) is the gradient accumulation variable, with \(r_1 = 0\). \(\eta\) is the global learning rate, and \(\epsilon\) is a very small value to prevent division by \(0\).
 
 \begin{align*}
-    r_t &= r_{t-1} + \sqrt{\sum^t_{i=1}g^2_i} \\
-    \Delta \theta_t = \frac{\eta}{\delta + r_t}
-    \theta_t = \theta_{t-1} + \Delta \theta
+    \vb*{s}_t &= \vb*{s}_{t-1} + \sqrt{\vb*{g}_t \otimes \vb*{g}_t} \\
+    \vb*{\epsilon \theta}_t &= \frac{-\eta}{\epsilon + \vb*{s_t}} \otimes \vb*{g} \\
+    \vb*{\theta}_t &= \vb*{\theta}_{t-1} + \vb*{\epsilon \theta}_t
 \end{align*}
 
 \subsection{RMSProp} % DL 8.5.2
 
+RMsProp is similar to AdaGrad, but with an exponentially decaying moving average gradient accumulation variable \cite{Goodfellow-et-al-2016}. This allows the algorithm to converge more quickly as it approaches a solution.
+
+The parameters here are the same as for AdaGrad, with the addition of \(\beta\) for the decay rate. A common value for \(\beta\) is 0.9 \cite{pml1book}.
+
+\begin{align*}
+    \vb*{s}_t = &= \beta \vb*{s}_{t-1} + (1-beta)\vb*{g}_t \otimes \vb*{g}_t
+    \vb*{\epsilon \theta}_t &= \frac{-\eta}{\epsilon + \vb*{s_t}} \otimes \vb*{g} \\
+    \vb*{\theta}_t &= \vb*{\theta}_{t-1} + \vb*{\epsilon \theta}_t
+\end{align*}
+
 \subsection{Adadelta} % need to find source
+
+Adadelta is a variant of RMSProp that multiplies the update by an exponetially weighted moving average of the past updates \(\vb*{\delta}_t = \beta \vb*{delta}_{t-1} + (1-\beta)(\vb*{\delta}_t)^2\) \cite{pml1book} \cite{zeiler2012}.
+
+\begin{align*}
+    \vb*{s}_t = &= \beta \vb*{s}_{t-1} + (1-beta)\vb*{g}_t \otimes \vb*{g}_t
+    \vb*{\epsilon \theta}_t &= \frac{-\eta \sqrt{\vb*{\delta}_{t-1}}}{\epsilon + \vb*{s_t}} \otimes \vb*{g} \\
+    \vb*{\theta}_t &= \vb*{\theta}_{t-1} + \vb*{\epsilon \theta}_t
+\end{align*}
+
 
 \subsection{Adam} % DL 8.5.3
 
