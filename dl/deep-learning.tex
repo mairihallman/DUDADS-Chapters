@@ -310,19 +310,29 @@ Some resources give a different set of formulas for optimization with momentum. 
 
 An improved variant of the momentum algorithm was introduced in 2013 \cite{sutskever13}. This version, known as Nesterov momentum, uses the gradient at \(\theta_{t-1} + \beta m_{t-1}\) instead of at \(\theta{t-1}\). This can be thought of as an "extrapolation" step. Instead of measuring at the previous output, we are assuming that the algorithm will continue to converge slightly ahead of this output with respect to the momentum. This allows for faster convergence.
 
-\begin{align}
-    g_{t} &= \grad \cal L(\theta_t +\beta m_t) \\
+\begin{align*}
+    g_{t} &= \nabla \mathcal{L} (\theta_{t} + \beta m_{t}) \\
     m_{t+1} &= \beta m_{t} - \eta g_{t-1} \\
-    \theta_{t+1} = \theta_t + m_{t+1}
-\end{align}
+    \theta_{t+1} &= \theta_t + m_{t+1}
+\end{align*}
 
 % adaptive learning rate algorithms start here
 
 \subsection{AdaGrad} % DL 8.5.1
 
-\subsection{Adadelta} % need to find source
+Until now, our discussion of learning algorithms has concerned algorithms with static learning rates. The AdaGrad algorithm modifies the learning rates of the model parameters by dividing them by the square root of the sum of the past gradients. This speeds up convergence when the gradient is less extreme. 
+
+The algorithm is provided below. The variable \(r\) is the gradient accumulation variable, with \(r_1 = 0\). \(\eta\) is the global learning rate, and \(\delta\) is a very small value to prevent division by \(0\).
+
+\begin{align*}
+    r_t &= r_{t-1} + \sqrt{\sum^t_{i=1}g^2_i} \\
+    \Delta \theta_t = \frac{\eta}{\delta + r_t}
+    \theta_t = \theta_{t-1} + \Delta \theta
+\end{align*}
 
 \subsection{RMSProp} % DL 8.5.2
+
+\subsection{Adadelta} % need to find source
 
 \subsection{Adam} % DL 8.5.3
 
