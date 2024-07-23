@@ -288,7 +288,7 @@ In section 21.4.3, we introduced stochastic gradient descent. Below are some com
 
 A significant drawback of SGD is that it can be very slow to converge to an optimal solution. SGD with momentum helps address this by adding a weighted moving average of the past gradients. This allows the algorithm to converge more quickly when sequential gradients move in the same direction, and to slow down if there is a sudden change \cite{pml1book}. 
 
-The momentum algorithm is implemented as follows. Here, \(\vb*{m}_t\) is the momentum, \(\eta\) is the learning rate, \(\vb*{g}_{t-1}\) is the gradient at previous output, and \(\vb*{\theta}_t\) is the output. \(beta\) is the momentum hyperparamenter, which controls the exponential decay of the weights of past gradients. Common values of \(\beta\) are \(0.5\), \(0.9\), and \(0.99\) \cite{pml1book}
+The momentum algorithm is implemented as follows. Here, \(\vb*{m}_t\) is the momentum, \(\eta\) is the learning rate, \(\vb*{g}_{t-1}\) is the gradient at previous output, and \(\vb*{\theta}_t\) is the output. \(\beta\) is the momentum hyperparamenter, which controls the exponential decay of the weights of past gradients. Common values of \(\beta\) are \(0.5\), \(0.9\), and \(0.99\) \cite{pml1book}
 
 % \eta or \eta_t ?
 
@@ -302,17 +302,17 @@ The momentum algorithm is implemented as follows. Here, \(\vb*{m}_t\) is the mom
 Some resources give a different set of formulas for optimization with momentum. Note that the following are equivalent when \(\vb*{m}_1 = 0\).
 
 \begin{align*}
-    \vb*{m}_t &= \beta \vb*{m}_{t-1} - \eta \vb*{g}_{t-1} \\
+    \vb*{m}_t &= \beta \vb*{m}_{t-1} - \eta \vb*{g}_t \\
     \vb*{\theta}_t &= \vb*{\theta}_{t-1} + \vb*{m}_t
 \end{align*}
 
 \subsection{Nesterov Momentum}
 
-An improved variant of the momentum algorithm was introduced in 2013 \cite{sutskever13}. This version, known as Nesterov momentum, uses the gradient at \(\vb*{\theta}_{t-1} + \beta \vb*{m}_{t-1}\) instead of at \(\theta{t-1}\). This can be thought of as an "extrapolation" step. Instead of measuring at the previous output, we are assuming that the algorithm will continue to converge slightly ahead of this output with respect to the momentum. This allows for faster convergence.
+An improved variant of the momentum algorithm was introduced in 2013 \cite{sutskever13}. This version, known as Nesterov momentum, uses the gradient at \(\vb*{\theta}_{t-1} + \beta \vb*{m}_{t-1}\) instead of at \(\theta{t-1}\). This can be thought of as an ``extrapolation" step. Instead of measuring at the previous output, we are assuming that the algorithm will continue to converge slightly ahead of this output with respect to the momentum. This allows for faster convergence.
 
 \begin{align*}
     \vb*{g}_{t} &= \nabla \mathcal{L} (\vb*{\theta}_{t} + \beta \vb*{m}_{t}) \\
-    \vb*{m}_{t+1} &= \beta \vb*{m}_{t} - \eta \vb*{g}_{t-1} \\
+    \vb*{m}_{t+1} &= \beta \vb*{m}_{t} - \eta \vb*{g}_t \\
     \vb*{\theta}_{t+1} &= \vb*{\theta}_t + \vb*{m}_{t+1}
 \end{align*}
 
@@ -326,8 +326,8 @@ The algorithm is provided below. The variable \(s\) is the gradient accumulation
 
 \begin{align*}
     \vb*{s}_t &= \vb*{s}_{t-1} + \sqrt{\vb*{g}_t \otimes \vb*{g}_t} \\
-    \vb*{\epsilon \theta}_t &= \frac{-\eta}{\epsilon + \vb*{s_t}} \otimes \vb*{g} \\
-    \vb*{\theta}_t &= \vb*{\theta}_{t-1} + \vb*{\epsilon \theta}_t
+    \vb*{\Delta \theta}_t &= \frac{-\eta}{\epsilon + \vb*{s_t}} \otimes \vb*{g} \\
+    \vb*{\theta}_t &= \vb*{\theta}_{t-1} + \vb*{\Delta \theta}_t
 \end{align*}
 
 \subsection{RMSProp} % DL 8.5.2
@@ -337,23 +337,34 @@ RMsProp is similar to AdaGrad, but with an exponentially decaying moving average
 The parameters here are the same as for AdaGrad, with the addition of \(\beta\) for the decay rate. A common value for \(\beta\) is 0.9 \cite{pml1book}.
 
 \begin{align*}
-    \vb*{s}_t = &= \beta \vb*{s}_{t-1} + (1-beta)\vb*{g}_t \otimes \vb*{g}_t
-    \vb*{\epsilon \theta}_t &= \frac{-\eta}{\epsilon + \vb*{s_t}} \otimes \vb*{g} \\
-    \vb*{\theta}_t &= \vb*{\theta}_{t-1} + \vb*{\epsilon \theta}_t
+    \vb*{s}_t &= \beta \vb*{s}_{t-1} + (1-\beta)\vb*{g}_t \otimes \vb*{g}_t \\
+    \vb*{\Delta \theta}_t &= \frac{-\eta}{\epsilon + \vb*{s_t}} \otimes \vb*{g}_t \\
+    \vb*{\theta}_t &= \vb*{\theta}_{t-1} + \vb*{\Delta \theta}_t
 \end{align*}
 
 \subsection{Adadelta} % need to find source
 
-Adadelta is a variant of RMSProp that multiplies the update by an exponetially weighted moving average of the past updates \(\vb*{\delta}_t = \beta \vb*{delta}_{t-1} + (1-\beta)(\vb*{\delta}_t)^2\) \cite{pml1book} \cite{zeiler2012}.
+Adadelta is a variant of RMSProp that multiplies the update by an exponetially weighted moving average of the past updates \(\vb*{\delta}_t = \beta \vb*{\delta}_{t-1} + (1-\beta)(\vb*{\delta}_t)^2\) \cite{pml1book} \cite{zeiler2012}.
 
 \begin{align*}
-    \vb*{s}_t = &= \beta \vb*{s}_{t-1} + (1-beta)\vb*{g}_t \otimes \vb*{g}_t
-    \vb*{\epsilon \theta}_t &= \frac{-\eta \sqrt{\vb*{\delta}_{t-1}}}{\epsilon + \vb*{s_t}} \otimes \vb*{g} \\
-    \vb*{\theta}_t &= \vb*{\theta}_{t-1} + \vb*{\epsilon \theta}_t
+    \vb*{s}_t &= \beta \vb*{s}_{t-1} + (1-\beta)\vb*{g}_t \otimes \vb*{g}_t \\
+    \vb*{\Delta \theta}_t &= \frac{-\eta \sqrt{\vb*{\delta}_{t-1}}}{\epsilon + \vb*{s_t}} \otimes \vb*{g}_t \\
+    \vb*{\theta}_t &= \vb*{\theta}_{t-1} + \vb*{\Delta \theta}_t
+\end{align*}
+
+\subsection{Adam} % DL 8.5.3
+
+The adaptive moment estimation, or Adam optimizer, can be thought of as a hybrid of the momentum and RMSProp algorithms. It is good practice to correct \(m_t\) and \(s_t\) for bias to prevent bias towards smaller values \cite{pml1book}. % add more
+\begin{align*}
+    \vb*{m}_t &= \beta_1 \vb*{m}_{t-1} + (1-\beta_1)\vb*{g}_{t-1} \\
+    \vb*{s}_t &= \beta_2 \vb*{s}_{t-1} + (1-\beta_3)\vb*{g}_t \otimes \vb*{g}_t \\
+    \hat{\vb*{m}}_t &= \frac{\vb*{m}_t}{1-\beta^t_1} \\ 
+    \hat{\vb*{s}}_t &= \frac{\vb*{s}_t}{1-\beta^t_2} \\ 
+    \vb*{\Delta \theta}_t &= \frac{-\eta}{\epsilon + \vb*{s_t}} \otimes \vb*{m}_t \\
+    \vb*{\theta}_t &= \vb*{\theta}_{t-1} + \vb*{\Delta \theta}_t
 \end{align*}
 
 
-\subsection{Adam} % DL 8.5.3
 
 \section{Dealing with Unlabelled Data}
 
