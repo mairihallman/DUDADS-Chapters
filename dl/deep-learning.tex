@@ -614,21 +614,40 @@ Look at the images that were classified incorrectly. It seems that the model's m
 
 \section{Recurrent Neural Networks}
 
+% fact check
+Until now, we have been dealing with deep networks that only flow in one direction: forward (hence the term "feed-forward" networks). These networks are limited in that they can only take in and ouput sequences of a predetermined size. Recurrent neural networks can handle inputs of varying lengths. They are used for sequential inputs, such as text and time series data.
+
+In a recurrent neural network, the output of a node is used as input to the next layer, as in a feedforward network, but may also be input to the same node at the next time step \(t\) \cite{hands-on-ml}. More formally, node's hidden state \(h_t\) is a function of its new inputs and its output at \(h_{t-1}\) \cite{Goodfellow-et-al-2016}. Depending on the type of RNN, the hidden state may or may not be equal to the output at the previous time step.
+
+\[\vb*{h}_t = f(\vb*{h}_{t-1},\vb*{x}_t,\theta)\]
+
+The four main types of recurrent neural networks are sequence-to-sequence, sequence-to-vector, vector-to-sequence, and encoder-decoder.
+
+\subsection*{Vector-to-Sequence RNNs}
+
+Vector-to-sequence RNNs are used to generate sequences of variable lengths from vectors of a fixed length. At each time step, we take a sample of the outputs from \(h_t\), and use these as inputs for the next time step to get \(h_{t+1}\). This can be denoted by the conditional generative model, where \(T\) is the length of the input sequence.
+
+\begin{align*}
+    p(\vb*{y}_{1:T}|\vb*{x}) &= \sum_{\vb*{h}_{1:T}}p(\vb*{y}_{1:T},\vb*{h}_{1:T}|\vb*{x}) \\
+    &= \sum_{\vb*{h}_{1:T}} \prod_{t=1}^T p(\vb*{y}_t|\vb*{h}_t)p(\vb*{h}_t|\vb*{h}_{t-1},\vb*{y}_{t-1},\vb*{x})
+\end{align*}
+
+% stuff about computing hidden states?
+\subsection*{Sequence-to-Vector RNNs}
+
+A sequence-to-vector RNN takes in a sequence of variable length, and outputs a vector of fixed length. Rather than producing an output at each time step,  new input at each time step, but ignores the outputs until the last time step. This is most commonly used for classification of input sequences of varying lengths. For example, a sequence-to-vector model could be used to emails as legitimate or spam. We can represent this RNN as a conditional generative model \cite{pml1book}. 
+
+\[p(\vb*{y}|\vb*{x}_{1:T}) = \text{Categorical}(\vb*{y}_t|\text{softmax}(\vb*{W}\vb*{h}_T))\]
+
+\subsection*{Sequence-to-sequence RNNs}
+
+\subsection*{Encoder-Decoder Models}
+
 \section{Generative Models}
 
 \subsection{Generative Adversarial Neural Networks}
 
-\subsection{Variational Autoencoders}
-
-\subsection{Quantization}
-
-% can quantize weights or biases
-
-% linear quantization ( see L4 quantization theory)
-
-% example - 32-bit to 8-bit
-
-% quanto library
+\subsection{Autoencoders}
 
 \newpage
 
