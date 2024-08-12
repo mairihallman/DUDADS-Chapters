@@ -643,7 +643,23 @@ A sequence-to-vector RNN takes in a sequence of variable length, and outputs a v
 
 \subsection*{Sequence-to-sequence RNNs}
 
+Next, we will consider RNNs with variable input and output lengths. Here, we will assume that the input and output sequences are the same size. In this case, the conditional generative model is defined as follows \cite{pml1book}.
+
+\[p(y_{1:T}|x_{1:T}) = \sum_{h_{1:T}}\prod^T_{t=1}p(y_t|h_t)I(h_t=f(h_{t-1},x_t))\]
+
+The inital hidden state is \(h_1 = f(h_0, x_1) = f_0(x_1)\) \cite{pml1book}. 
+
+% bidirectional RNN?
+
 \subsection*{Encoder-Decoder Models}
+
+What if we want a sequence-to-sequence model where the output and input sequences aren't necessarily the same size? In this case, we use an encoder-decoder network. Here, the encoder is a sequence-to-vector RNN, and the decoder is a vector-to-sequence RNN. The decoder takes the encoder's output as its input to generate a sequence.
+
+\section*{Long-term memory}
+
+Due to vanishing gradients, RNNs have a tendency to ``forget'' information that is too far into the past. To overcome this, we can use specialized recurrent units.
+
+\subsection*{Gated Recurrent Units (GRUs)}
 
 \section{Generative Models}
 
