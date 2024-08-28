@@ -625,7 +625,7 @@ In a recurrent neural network, the output of a node is used as input to the next
 
 The four main types of recurrent neural networks are sequence-to-sequence, sequence-to-vector, vector-to-sequence, and encoder-decoder.
 
-\subsection*{Vector-to-Sequence RNNs}
+\subsection{Vector-to-Sequence RNNs}
 
 Vector-to-sequence RNNs are used to generate sequences of variable lengths from vectors of a fixed length. At each time step, we take a sample of the outputs from \(h_t\), and use these as inputs for the next time step to get \(h_{t+1}\). This can be denoted by the conditional generative model, where \(T\) is the length of the input sequence.
 
@@ -635,13 +635,13 @@ Vector-to-sequence RNNs are used to generate sequences of variable lengths from 
 \end{align*}
 
 % stuff about computing hidden states?
-\subsection*{Sequence-to-Vector RNNs}
+\subsection{Sequence-to-Vector RNNs}
 
 A sequence-to-vector RNN takes in a sequence of variable length, and outputs a vector of fixed length. Rather than producing an output at each time step,  new input at each time step, but ignores the outputs until the last time step. This is most commonly used for classification of input sequences of varying lengths. For example, a sequence-to-vector model could be used to emails as legitimate or spam. We can represent this RNN as a conditional generative model \cite{pml1book}. 
 
 \[p(\vb*{y}|\vb*{x}_{1:T}) = \text{Categorical}(\vb*{y}_t|\text{softmax}(\vb*{W}\vb*{h}_T))\]
 
-\subsection*{Sequence-to-sequence RNNs}
+\subsection{Sequence-to-sequence RNNs}
 
 Next, we will consider RNNs with variable input and output lengths. Here, we will assume that the input and output sequences are the same size. In this case, the conditional generative model is defined as follows \cite{pml1book}.
 
@@ -651,15 +651,37 @@ The inital hidden state is \(h_1 = f(h_0, x_1) = f_0(x_1)\) \cite{pml1book}.
 
 % bidirectional RNN?
 
-\subsection*{Encoder-Decoder Models}
+\subsection{Encoder-Decoder Models}
 
 What if we want a sequence-to-sequence model where the output and input sequences aren't necessarily the same size? In this case, we use an encoder-decoder network. Here, the encoder is a sequence-to-vector RNN, and the decoder is a vector-to-sequence RNN. The decoder takes the encoder's output as its input to generate a sequence.
 
-\section*{Long-term memory}
+\subsection{Long-term memory}
 
-Due to vanishing gradients, RNNs have a tendency to ``forget'' information that is too far into the past. To overcome this, we can use specialized recurrent units.
+Due to vanishing gradients, RNNs have a tendency to ``forget'' information that is too far into the past. To overcome this, we can use specialized recurrent units. These units allow the network to learn which information to remember long-term, and which to discard \cite{hands-on-ml}.
 
-\subsection*{Gated Recurrent Units (GRUs)}
+\subsubsection{Long SHort-Term Memory (LSTM) Units}
+
+LSTM cells add additional information to the hidden state via a memory cell \cite{pml1book}. We can think of the hidden state as short-term memory, and the memory cell's state as long-term memory. Which information is stored in the memory cell is controlled by an input gate, a forget gate, and an output gate. Below is an overview of how these gates interact with the memory cell to control the unit's long-term memory and update the hidden state.
+
+\begin{align*}
+    \vb*{I}_t &= \sigma(\vb*{X}_t\vb*{W}_{xi} + \vb*{H}_{t-1}W_{hi} + \vb*{b}_i) & \text{input gate} \\
+    \vb*{F}_t &= \sigma(\vb*{X}_t\vb*{W}_{xt} + \vb*{H}_{t-1}W_{hf} + \vb*{b}_f) & \text{forget gate} \\
+    \vb*{O}_t &= \sigma(\vb*{X}_t\vb*{W}_{xo} + \vb*{H}_{t-1}W_{ho} + \vb*{b}_o) & \text{output gate} \\
+    \vb*{\tilde{C}}_t &= tanh(\vb*{X}_t\vb*{W}_{xc} + \vb*{H}_{t-1}\vb*{W}_{hc} +\vb*{b}_c) & \text{candidate memory cell} \\
+    \vb*{C}_t &= \vb*{F}_t * \vb*{C}_{t-1} + \vb*{I}_t * \vb*{tilde{C}}_t & \text{final memory cell computed based on previous memory cell and candidate memory cell, weighted by input and forget values} \\
+    \vb*{H}_t &= \vb*{O}_t * tanh(\vb*{C}_t) &= final hidden state
+\end{align*}
+
+\subsubsection{Gated Recurrent Units (GRUs)}
+
+GRUs are a simplified variation of LSTM units that elimimate the need for a memory cell. The input and forget gates are replaced with one update gate \(\vb*{Z}_t\). A reset gate is added to determine which components of the previous state will be used to get the next state \cite{hands-on-ml}, and the output gate is removed entirely \cite{pml1book}.
+
+\begin{align*}
+    \vb*{R_t} &= \sigma(\vb*{X}_t\vb*{W}_{xr} + \vb*{H}_{t-1}\vb*{W}_{hr} + \vb*{b}_r) & reset gate \\
+    \vb*{Z_t} &= \sigma(\vb*{X}_t\vb*{W}_{xz} + \vb*{H_{t-1}}\vb*{W}_{ht} + \vb*{b}_z) & update gate \\
+    \vb*{\tilde{H}_t} &= tanh(\vb*{H}_t - \vb*{W}_{xh} + (\vb*{R}_t * \vb*{H_{t-1}})\vb*{W}_{hh} + \vb*{b}_h) & candidate hidden state \\
+    \vb*{H}_t &= \vb*{Z}_t * \vb*{H}_{t-1} + (1 - \vb*{Z}_t)*\vb*{H}_t & final hidden state \\
+\end{align*}
 
 \section{Generative Models}
 
