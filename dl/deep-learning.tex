@@ -3,7 +3,7 @@
 % \usepackage[margin=2.54cm]{geometry}
 \usepackage{amsmath} % For mathematical symbols and environments
 \usepackage{hyperref}
-\usepackage[backend=biber, style=numeric, citestyle=numeric]{biblatex} %Imports biblatex package
+\usepackage[backend=biber, style=numeric, citestyle=numeric, maxcitenames=1]{biblatex} %Imports biblatex package
 \usepackage{mathtools}
 \usepackage{physics}
 \usepackage{placeins}
@@ -366,14 +366,6 @@ The adaptive moment estimation, or Adam optimizer, can be thought of as a hybrid
     \vb*{\theta}_t &= \vb*{\theta}_{t-1} + \vb*{\Delta \theta}_t
 \end{align*}
 
-
-
-\section{Dealing with Unlabelled Data}
-
-\subsection{Unsupervised Pretraining}
-
-\subsection{Semi-Supervised Learning} % DL 7.6
-
 \section{Convolutional Neural Networks}
 
 % add intro
@@ -683,12 +675,34 @@ GRUs are a simplified variation of LSTM units that elimimate the need for a memo
     \vb*{H}_t &= \vb*{Z}_t * \vb*{H}_{t-1} + (1 - \vb*{Z}_t)*\vb*{H}_t & final hidden state \\
 \end{align*}
 
-\section{Generative Models}
+\section{Specialized Architectures}
 
-\subsection{Generative Adversarial Neural Networks}
+This section presents a very brief overview of several specialized network architectures. Optional further reading is incicated at the end of each passage.
 
-\subsection{Autoencoders}
+\subsection{Generative Adversarial Neural Networks} % Goodfellow page 696
 
+Young children typically aren't very good liars. As people get older, they acquire more experience getting caught in bad lies and getting away with good ones. This experience should, in theory, make them better liars.
+
+This scenario illustrates the idea behind generative adversarial networks, or GANs. GANs consist of two networks; a generator and a discriminator. The generator outputs samples \(\vb*{x} = g(\vb*{z; \theta_{(g)}})\). The generated data and real data are input to the discriminator, which must then assign each point a probability \(d(X; theta^{(d)})\). This corresponds to the probability that \(x\) is a "real" data point (not produced by the generator). The payoff of the discriminator \cite{Goodfellow-et-al-2016} (its ability to differentiate between real and fake data) can be denoted 
+
+\[v(\vb*{theta}^{(g),}\vb*{theta}^{(d)} = \mathbf{E}_{x~p_{\text{data}}}log[d(x)] + mathbf{E}_{x~p_{\text{model}}}log[1-d(x)])\]
+
+and the optimal generating function \cite{Goodfellow-et-al-2016} is
+\[g* = arg\underset{g}{min}(\underset{d}{max}v(g,d))\]
+
+The optimal generating function minimizes the payoff of the discriminator (\( arg\underset{g}{min}\)), which itself is trying to maximize its payoff (\(underset{d}{max}v(g,d)\)).
+
+Readers seeking a more in-depth treatment of GANs are invited to consult section 20.10.4 of \citetitle{Goodfellow-et-al-2016} by \citeauthor{Goodfellow-et-al-2016} and chapter 26 of \citetitle{pml2Book} by \citeauthor{pml2Book}.
+
+\subsection{Autoencoders and Variational Autoencoders}
+
+Autoencoders are a type of network used to copy an input to a reduced, userful output. In a traditional determininistic autoencoder, the encoder function \(f\) transforms the input to a code \(h = f(x)\). The reconstruction function \(g\) outputs a reconstruction of the input \(r = g(x)\). Typically, the reconstruction will be constrained in some way to ensure that the reconstruction has reduced dimensions with respect to the input \cite{Goodfellow-et-al-2016}.
+
+Readers wishing to learn more about autoencoders are invited to consult chapter 14 of \citetitle{Goodfellow-et-al-2016} by 
+
+Variational autoenoders are the probabilistic analogue of traditional autoencoders. Rather than outputting a single point, the encoder outputs a probability distribution \(q(z|x) = N(z|\mu , \sum\). This is the posterior distribution of the latent space given an input x. The mean and covariance matrix are learned by the network. A sample \(z\) is taken from this distribution and input to a generator \(g\) to produce an output \(g(x)\).
+
+The above is a very brief discussion of VAEs. For a more complete explanation, including reparameterization of the samples and derivation of the objective function, please see section 20.10.3 of \citetitle{Goodfellow-et-al-2016} by \citeauthor{Goodfellow-et-al-2016} and chapter 21 of \citetitle{pml2Book} by \citeauthor{pml2Book}.
 \newpage
 
 \addcontentsline{toc}{section}{References}
