@@ -175,6 +175,69 @@ Deep networks can often approximate complex functions with far fewer nodes than 
 
 To illustrate, consider a network with 5 layers, each with 10 nodes for a total of 50 nodes. For the sake of this example, we will assume that each layer has one input. The number of linear regions that can be learned by this network is \(10^5\). For a single-layer network to learn \(10^5\) linear regions, it would require \(10^5\) nodes. 
 
+\subsection{Getting Started}
+
+To help you get comfortable with neural network architecture, we will use Pytorch and Lightning code a network to complete a task that you are already very familiar with: linear regression. First, import dependencies and set a seed for reproductibility.
+
+\lstinputlisting[firstline=18,lastline=24]{dl-scripts/introductory-ex.py}
+
+Generate some dummy data according to the relationship \(y = 3x + 1\).
+
+\lstinputlisting[firstline=28,lastline=31]{dl-scripts/introductory-ex.py}
+
+Once the data loader has been initialized, define a class for our model.
+
+\lstinputlisting[firstline=36,lastline=55]{dl-scripts/introductory-ex.py}
+
+Now the fun part - training!
+
+\lstinputlisting[firstline=59,lastline=61]{dl-scripts/introductory-ex.py}
+
+\begin{lstlisting}[style=output]
+INFO: GPU available: False, used: False
+INFO:lightning.pytorch.utilities.rank_zero:GPU available: False, used: False
+INFO: TPU available: False, using: 0 TPU cores
+INFO:lightning.pytorch.utilities.rank_zero:TPU available: False, using: 0 TPU cores
+INFO: HPU available: False, using: 0 HPUs
+INFO:lightning.pytorch.utilities.rank_zero:HPU available: False, using: 0 HPUs
+INFO: 
+  | Name   | Type   | Params | Mode 
+------------------------------------------
+0 | linear | Linear | 2      | train
+------------------------------------------
+2         Trainable params
+0         Non-trainable params
+2         Total params
+0.000     Total estimated model params size (MB)
+1         Modules in train mode
+0         Modules in eval mode
+INFO:lightning.pytorch.callbacks.model_summary:
+  | Name   | Type   | Params | Mode 
+------------------------------------------
+0 | linear | Linear | 2      | train
+------------------------------------------
+2         Trainable params
+0         Non-trainable params
+2         Total params
+0.000     Total estimated model params size (MB)
+1         Modules in train mode
+0         Modules in eval mode
+/usr/local/lib/python3.10/dist-packages/lightning/pytorch/loops/fit_loop.py:298: The number of training batches (10) is smaller than the logging interval Trainer(log_every_n_steps=50). Set a lower value for log_every_n_steps if you want to see logs for the training epoch.
+Epoch 99: 100% [==============================] 10/10 [00:00<00:00, 50.34it/s, v_num=1]
+INFO: `Trainer.fit` stopped: `max_epochs=100` reached.
+INFO:lightning.pytorch.utilities.rank_zero:`Trainer.fit` stopped: `max_epochs=100` reached.
+\end{lstlisting}
+
+Let's see how our model did.
+
+\lstinputlisting[firstline=65,lastline=66]{dl-scripts/introductory-ex.py}
+
+\begin{lstlisting}[style=output]
+Trained Model Parameters: Slope: 2.9757, Intercept: 0.9874
+\end{lstlisting}
+
+That's pretty good! In the coming sections, we will explore more advanced techniques for training deeper networks, as well as different specialized network arcitectures.
+
 \section{Activation Functions and Weight Initialization for Hidden Layers} % see Deep Learning 6.3; Probabilistic ML 13.2.3
 
 Different types of hidden units serve different purposes within deep networks. Most types of hidden units perform an affine  transformation on the layer's input, and then apply an activation function \(g(z)\) to the transformed inputs \cite{Goodfellow-et-al-2016}. If all activation functions within a deep network are linear, then the network reduces to a linear model \cite{pml1book}. While linear activation functions can be useful for reducing the number of parameters in a model , the discussion surrounding hidden units and their activation functions within a deep network typically concerns non-linear units \cite{Goodfellow-et-al-2016}. 
@@ -251,17 +314,9 @@ Recall ridge and LASSO regression from section 20.2.4. When generalized beyond l
     \label{L1-reg}
 \end{equation} for \(\it{L}^1\) weight decay, where \(\lambda\) is a hyperparameter.
 
-Tensorflow offers functionality for \(\it{L}^2\) weight decay \(\it{L}^1\) weight decay, and using both together \cite{tensorflow2015-whitepaper}.
-
-\lstinputlisting{dl-scripts/documentation/weight-decay.py}
-
 \subsection{Early Stopping} % DL 7.8
 
 If a model is trained for too many epochs, the validation set error will reach a minumum at the optimal number of epochs, and then begin to increase as a result of overfitting. This can be prevented by implementing early stopping. When early stopping is used, a copy of the model's parameters is only saved at the end of a training iteration if the validation loss improves \cite{Goodfellow-et-al-2016}. Training stops automatically if the validation loss hasn't decreased, or has only decreased by a very small amount, after a given number of training loops.
-
-Early stopping can be implemented in Tensorflow as follows.
-
-\lstinputlisting{dl-scripts/documentation/early-stop.py}
 
 \subsection{Dropout} % DL 7.12, PML 13.5.4
 
@@ -278,13 +333,9 @@ Dropout helps prevent overfitting by stopping units from becoming ``lazy". Consi
 
 \FloatBarrier
 
-Like Thanos, we can dropout in Tensorflow (note that dropping out 50\% of the weights is very excessive and not advised)\cite{tensorflow2015-whitepaper}.
-
-\lstinputlisting{dl-scripts/documentation/dropout.py}
+Please note that Thanos was unpopular for a reason; dropping out 50\% of the weights is very excessive and not advised \cite{tensorflow2015-whitepaper}.
 
 \FloatBarrier
-
-\subsection{Batch Normalization}
 
 \section{Variants of Stochastic Gradient Descent} % See Deep Learning all 8.3, 8.4, all 8.5, 8.7.1, 8.7.4
 
@@ -509,6 +560,7 @@ As expected, no such luck. What happens when we add another convolutional layer?
  56/56 [==============================] - 4s 38ms/step - loss: 6.9435e-04 - accuracy: 1.0000 - val_loss: 8.4804e-04 - val_accuracy: 1.0000
  Epoch 10/10
  56/56 [==============================] - 4s 38ms/step - loss: 5.3139e-04 - accuracy: 1.0000 - val_loss: 7.7833e-04 - val_accuracy: 1.0000
+\end{lstlisting}
 
 \lstinputlisting[firstline=100,lastline=100]{dl-scripts/cnn-ex1-colab.py}
 
@@ -680,6 +732,94 @@ GRUs are a simplified variation of LSTM units that elimimate the need for a memo
     \vb*{\tilde{H}_t} &= tanh(\vb*{H}_t - \vb*{W}_{xh} + (\vb*{R}_t * \vb*{H_{t-1}})\vb*{W}_{hh} + \vb*{b}_h) & candidate hidden state \\
     \vb*{H}_t &= \vb*{Z}_t * \vb*{H}_{t-1} + (1 - \vb*{Z}_t)*\vb*{H}_t & final hidden state \\
 \end{align*}
+
+\subsection{Music Generation Example}
+
+In this example, we will use train an RNN with an LSTM layer on MIDI data, and then use our trained network to generate new music.
+
+First, import dependencies and set seed to ensure reproductibility.
+
+\lstinputlisting[firstline=19,lastline=29]{dl-scripts/rnn-midi.py}
+
+The MIDI data will be represented as a sequence of notes, each with three different features: pitch, step, and duration. Pitch is a categorical variable with 128 classes, each representing a different pitch that can be stored in MIDI format. Step is a continuous variable, repreesenting the time in beats between the note in question and the previous note. In accordance with musical theory best practices quantize this to a precision of \(0.125\). Duration is continous and represents how long the note is held. It is quantized in the same way as step.
+
+Data-handling for this example is more complicated than for the previous examples. Data managment classes have been provided in the interest of providing complete instructions, but feel free to skip the code for this section if you are more interested in the implementation of them network itself. 
+
+The \lstinline{MidiDataset} class loads all of the MIDI files in a given directory into a dataset. For each file, overlapping instrument tracks are combined into one acoustic grand piano track. Pitches and durations are quantized, and the sequences are concatenated. 
+
+\lstinputlisting[firstline=36,lastline=89]{dl-scripts/rnn-midi.py}
+
+The \lstinline{MidiDataModule} class allows us to use the dataset with Lightning, and handles the train and validation splits.
+
+\paragraph{Why aren't we using a test set?} Our goal is not to predict a ``correct'' outcome; it is to generate outputs that sound nice (or at the very least interesting). A test set is therefore not necessary. 
+
+\lstinputlisting[firstline=91,lastline=111]{dl-scripts/rnn-midi.py}
+
+Now we can define our model class. Pitch is categorical, so we use cross entropy for the pitch loss. Step and duration are continuous, so for those we  use MSE. Our first layer is an LSTM layer, followed by a dropout layer for regularization. Each feature has a corresponding output layer.  We also implement weight decay with our optimizer (Adam). 
+
+\lstinputlisting[firstline=114,lastline=168]{dl-scripts/rnn-midi.py}
+
+Next, we define necessary variables and initialize our data module.
+
+\lstinputlisting[firstline=170,lastline=178]{dl-scripts/rnn-midi.py}
+
+Now we can initialize and train our model. In the interest of preserving cloud computation resources we only train for 20 epochs, but the early stop callback would faciliate longer training if desired.
+
+\lstinputlisting[firstline=182,lastline=185]{dl-scripts/rnn-midi.py}
+
+\begin{lstlisting}[style=output]
+INFO: LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+INFO: lightning.pytorch.accelerators.cuda: LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+INFO: 
+| Name                  | Type             | Params | Mode 
+-------------------------------------------------------------------
+0 | rnn                   | LSTM             | 68.1 K | train
+1 | dropout               | Dropout          | 0      | train
+2 | fc_pitch              | Linear           | 16.5 K | train
+3 | fc_step               | Linear           | 129    | train
+4 | fc_duration           | Linear           | 129    | train
+5 | loss_fn_pitch         | CrossEntropyLoss | 0      | train
+6 | loss_fn_step_duration | MSELoss          | 0      | train
+-------------------------------------------------------------------
+84.9 K    Trainable params
+0         Non-trainable params
+84.9 K    Total params
+0.339     Total estimated model params size (MB)
+7         Modules in train mode
+0         Modules in eval mode
+INFO: lightning.pytorch.callbacks.model_summary:
+| Name                  | Type             | Params | Mode 
+-------------------------------------------------------------------
+0 | rnn                   | LSTM             | 68.1 K | train
+1 | dropout               | Dropout          | 0      | train
+2 | fc_pitch              | Linear           | 16.5 K | train
+3 | fc_step               | Linear           | 129    | train
+4 | fc_duration           | Linear           | 129    | train
+5 | loss_fn_pitch         | CrossEntropyLoss | 0      | train
+6 | loss_fn_step_duration | MSELoss          | 0      | train
+-------------------------------------------------------------------
+84.9 K    Trainable params
+0         Non-trainable params
+84.9 K    Total params
+0.339     Total estimated model params size (MB)
+7         Modules in train mode
+0         Modules in eval mode
+Epoch 19: 100% [==============================] 1885/1885 [00:17<00:00, 109.42it/s, v_num=0, train_loss=3.410, val_loss=3.590]
+\end{lstlisting}
+
+Now that our model is trained, we can use it to generate new music. The \lstinline{get_seed-sequence} function allows us to sample a seed sequence from a different MIDI file to be used as input. Alternatively, a custom sequence could be defined manually.
+
+\lstinputlisting[firstline=191,lastline=226]{dl-scripts/rnn-midi.py}
+
+Now we can generate music! Pitch generation is probabilistic, with randomness controlled by the temperature parameter (higher temperature leads to more randomness). Step and duration generation are deterministic.
+
+\lstinputlisting[firstline=230,lastline=265]{dl-scripts/rnn-midi.py}
+
+Finally, the big reveal... we output our generated sequence to a MIDI file, which can then be played back.
+
+\lstinputlisting[firstline=268,lastline=293]{dl-scripts/rnn-midi.py}
+
+Find the output file in your file explorer and listen to your generated sequence. Does it sound like music? Is it good music? How do you think the model could be improved? Try experimenting, different regularization techniques, additional layers and investigating the parameter losses individually.
 
 \section{Specialized Architectures}
 
