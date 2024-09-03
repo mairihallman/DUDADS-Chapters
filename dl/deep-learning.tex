@@ -2,7 +2,10 @@
 \usepackage{graphicx} % Required for inserting images
 % \usepackage[margin=2.54cm]{geometry}
 \usepackage{amsmath} % For mathematical symbols and environments
+\usepackage{pgfplots}
+\usepackage{subcaption}
 \usepackage{hyperref}
+%\usepackage{tikz}
 \usepackage[backend=biber, style=numeric, citestyle=numeric, maxcitenames=1]{biblatex} %Imports biblatex package
 \usepackage{mathtools}
 \usepackage{physics}
@@ -246,10 +249,7 @@ Different types of hidden units serve different purposes within deep networks. M
 
 In modern deep networks, the default most commonly used activation function for hidden layers is the rectified linear unit, or ReLU activation function.
 
-\begin{equation}
-    a(z) = max(0, z)
-    \label{ReLU-activation}
-\end{equation}
+\[a(z) = max(0, z)\]
 
 This is analagous to a linear activation function with negative inputs "turned off" \cite{pml1book}. 
 
@@ -257,10 +257,35 @@ Notice that this function isn't differentiable at zero. In theory, this should m
 
 Variations of ReLU typically modify the slope for negative inputs \cite{Goodfellow-et-al-2016}. For a given input \(z_i\), this can be generalized as
 
-\begin{equation}
-    a(z,\alpha)_i = max(0, z_i) + \alpha_i min(0,z_i)
-    \label{generalization-ReLU}
-\end{equation}
+\[a(z,\alpha)_i = max(0, z_i) + \alpha_i min(0,z_i)\]
+
+\begin{figure}[h!]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            axis lines = middle,
+            xlabel = {$x$},
+            ylabel = {$y$},
+            domain=-10:10,
+            samples=100,
+            ymin=-1, ymax=10,
+            xtick={-10,-5,...,10},
+            ytick={0,5,10},
+            grid = both,
+            minor tick num=1,
+            width=10cm,
+            height=7cm,
+        ]
+        \addplot[
+            thick,
+            blue,
+        ] {max(0,x)};
+        \end{axis}
+    \end{tikzpicture}
+    \caption{The ReLU activation function.}
+    \label{fig:relu}
+\end{figure}
+
 
 Several ReLU variations of this form are listed below.
 
@@ -274,19 +299,73 @@ Several ReLU variations of this form are listed below.
 
 In the early days of deep learning, two commonly used activation functions for hidden units were the sigmoid function
 
-\begin{equation}
-    a(z) = \sigma (z) = \frac{1}{1 + e^{-z}}
-    \label{sigmoid-activation}
-\end{equation}
-
+\[a(z) = \sigma (z) = \frac{1}{1 + e^{-z}}\]
+    
 and the hyperbolic tangent function
 
-\begin{equation}
-    a(z) = tanh(z)
-    \label{tanh-activation}
-\end{equation}
+\[a(z) = tanh(z)\]
 
 These activation functions are no longer recommended for hidden units because they saturate. The sigmoid function saturates at zero and one, and the hyperbolic tangent function saturates at  negative one and one. Saturation is problematic because it leads to the gradient of a layer's output with respect to its input. Recall what we know about backpropagation from section 21.4.3. If the gradient is close to zero, the weights will update very slowly, if at all. Without a gradient, the model can't converge to a solution. This phenomenon is known as the vanishing gradient problem.
+
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                axis lines = middle,
+                xlabel = {$x$},
+                ylabel = {$y$},
+                domain=-10:10,
+                samples=100,
+                ymin=-0.1, ymax=1.1,
+                xtick={-10,-5,...,10},
+                ytick={0,0.5,1},
+                grid = both,
+                minor tick num=1,
+                width=7cm,
+                height=5cm,
+                title={Sigmoid Function},
+            ]
+            \addplot[
+                thick,
+                blue,
+            ] {1 / (1 + exp(-x))};
+            \end{axis}
+        \end{tikzpicture}
+        \label{fig:sigmoid}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                axis lines = middle,
+                xlabel = {$x$},
+                ylabel = {$y$},
+                domain=-10:10,
+                samples=100,
+                ymin=-1.1, ymax=1.1,
+                xtick={-10,-5,...,10},
+                ytick={-1, 0, 1},
+                grid = both,
+                minor tick num=1,
+                width=7cm,
+                height=5cm,
+                title={Hyperbolic Tangent Function},
+            ]
+            \addplot[
+                thick,
+                red,
+            ] {tanh(x)};
+            \end{axis}
+        \end{tikzpicture}
+        \label{fig:tanh}
+    \end{subfigure}
+    \caption{The sigmoid and hyperbolic tangent functions.}
+    \label{fig:activation_functions}
+\end{figure}
+
 
 \subsection{Weight Initialization} % PML1 13.4.5.1
 
@@ -304,15 +383,11 @@ As mentioned in chapter 21, before a deep network can be trained, its weights ha
 
 Recall ridge and LASSO regression from section 20.2.4. When generalized beyond linear models, these regularization techniques are known respectively as \(\it{L}^2\) and \(\it{L}^1\) regularization. In the context of neural networks, these methods are both commonly referred to as weight decay. Weight decay applies a regularization term to the objective function \(J(\vb*{w})\). The regularized objective function \(\tilde{J}(\vb*{w})\) is 
 
-\begin{equation}
-    \tilde{J}(\vb*{w}) = J(\vb*{w}) +\frac{\lambda}{2}\norm{w}^2_2
-    \label{L2-reg}
-\end{equation} for \(\it{L}^2\) weight decay, and 
+\[\tilde{J}(\vb*{w}) = J(\vb*{w}) +\frac{\lambda}{2}\norm{w}^2_2\]
 
-\begin{equation}
-    \tilde{J}(\vb*{w}) = J(\vb*{w}) +\lambda\norm{w}_1
-    \label{L1-reg}
-\end{equation} for \(\it{L}^1\) weight decay, where \(\lambda\) is a hyperparameter.
+\[\tilde{J}(\vb*{w}) = J(\vb*{w}) +\lambda\norm{w}_1\]
+
+for \(\it{L}^1\) weight decay, where \(\lambda\) is a hyperparameter.
 
 \subsection{Early Stopping} % DL 7.8
 
@@ -349,12 +424,10 @@ The momentum algorithm is implemented as follows. Here, \(\vb*{m}_t\) is the mom
 
 % \eta or \eta_t ?
 
-
 \begin{align*}
     \vb*{m}_t &= \beta \vb*{m}_{t-1} + \vb*{g}_{t-1} \\
     \vb*{\theta}_t &= \vb*{\theta}_{t-1} - \eta \vb*{m}_t
 \end{align*}
-
 
 Some resources give a different set of formulas for optimization with momentum. Note that the following are equivalent when \(\vb*{m}_1 = 0\).
 
@@ -432,10 +505,8 @@ Many young people who are active on social media use filters on their pictures b
 This is an example of discrete convolution, which is the case that we will be primarily concerned with. % In the interest of providing a complete resource, equations for discrete and continuous convolution in one dimension are provided below \cite{Goodfellow-et-al-2016}.
 
 In one dimension, discrete convolution is denoted
-\begin{equation}
-    \underbrace{s(i)}_{\substack{\text{feature} \\ \text{map}}} = (x*y)(i) = \sum\limits_{\substack{m}} \underbrace{x(m)}_{\substack{\text{input} \\ \text{data}}}\underbrace{y(i-m)}_\text{kernel}
-    \label{1D-discrete-convolution}\
-\end{equation}
+\[\underbrace{s(i)}_{\substack{\text{feature} \\ \text{map}}} = (x*y)(i) = \sum\limits_{\substack{m}} \underbrace{x(m)}_{\substack{\text{input} \\ \text{data}}}\underbrace{y(i-m)}_\text{kernel}\]
+
 
 
 % In the continuous case, equation \ref{1D-discrete-convolution} becomes
