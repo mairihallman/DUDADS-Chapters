@@ -5,20 +5,37 @@
 \usepackage{pgfplots}
 \usepackage{subcaption}
 \usepackage{hyperref}
-%\usepackage{tikz}
+\usepackage{tikz}
+\usetikzlibrary{matrix, positioning}
 \usepackage[backend=biber, style=numeric, citestyle=numeric, maxcitenames=1]{biblatex} %Imports biblatex package
 \usepackage{mathtools}
 \usepackage{physics}
 \usepackage{placeins}
 \usepackage[final]{listings}
 
-\usepackage{xcolor}
+% CNN
+\usepackage{amsmath} % for aligned
+\usepackage{listofitems} % for \readlist to create arrays
+\usetikzlibrary{arrows.meta} % for arrow size
+\usepackage[outline]{contour} % glow around text
+\contourlength{1.4pt}
 
+
+
+\usepackage{xcolor}
 \definecolor{backcolour}{RGB}{245,245,245}
 \definecolor{commentcolour}{rgb}{0,0.6,0}
 \definecolor{stringcolour}{rgb}{0.58,0,0.82}
 \definecolor{white}{rgb}{1,1,1}
 
+% CNN
+\colorlet{myred}{red!80!black}
+\colorlet{myblue}{blue!80!black}
+\colorlet{mygreen}{green!60!black}
+\colorlet{myorange}{orange!70!red!60!black}
+\colorlet{mydarkred}{red!30!black}
+\colorlet{mydarkblue}{blue!40!black}
+\colorlet{mydarkgreen}{green!30!black}
 
 
 \lstloadlanguages{Python}
@@ -507,6 +524,61 @@ This is an example of discrete convolution, which is the case that we will be pr
 In one dimension, discrete convolution is denoted
 \[\underbrace{s(i)}_{\substack{\text{feature} \\ \text{map}}} = (x*y)(i) = \sum\limits_{\substack{m}} \underbrace{x(m)}_{\substack{\text{input} \\ \text{data}}}\underbrace{y(i-m)}_\text{kernel}\]
 
+\begin{figure}[h!]
+    \centering
+    \begin{tikzpicture}[
+        2d-arr/.style={matrix of nodes, row sep=-\pgflinewidth, column sep=-\pgflinewidth, nodes={draw}}
+      ]
+    
+      \matrix (mtr) [2d-arr] {
+      0 & 1 & 1 & |[fill=orange!30]| 1 & |[fill=orange!30]| 0 & |[fill=orange!30]| 0 & 0\\
+      0 & 0 & 1 & |[fill=orange!30]| 1 & |[fill=orange!30]| 1 & |[fill=orange!30]| 0 & 0\\
+      0 & 0 & 0 & |[fill=orange!30]| 1 & |[fill=orange!30]| 1 & |[fill=orange!30]| 1 & 0\\
+      0 & 0 & 0 & 1 & 1 & 0 & 0\\
+      0 & 0 & 1 & 1 & 0 & 0 & 0\\
+      0 & 1 & 1 & 0 & 0 & 0 & 0\\
+      1 & 1 & 0 & 0 & 0 & 0 & 0\\
+      };
+    
+      \node[below=of mtr-5-4] {$\mathbf X$};
+    
+      \node[right=0.2em of mtr] (str) {$*$};
+    
+      \matrix (K) [2d-arr, right=0.2em of str, nodes={draw, fill=teal!30}] {
+        1 & 0 & 1 \\
+        0 & 1 & 0 \\
+        1 & 0 & 1 \\
+      };
+      \node[below=of K-3-2] {$\mathbf Y$};
+    
+      \node[right=0.2em of K] (eq) {$=$};
+    
+      \matrix (ret) [2d-arr, right=0.2em of eq] {
+      1 & 4 & 3 & |[fill=blue!80!black!30]| 4 & 1\\
+      1 & 2 & 4 & 3 & 3\\
+      1 & 2 & 3 & 4 & 1\\
+      1 & 3 & 3 & 1 & 1\\
+      3 & 3 & 1 & 1 & 0\\
+      };
+      \node[below=of ret-4-3] {$\mathbf{X* Y}$};
+    
+      \draw[dashed, teal] (mtr-1-6.north east) -- (K-1-1.north west);
+      \draw[dashed, teal] (mtr-3-6.south east) -- (K-3-1.south west);
+    
+      \draw[dashed, blue!80!black] (K-1-3.north east) -- (ret-1-4.north west);
+      \draw[dashed, blue!80!black] (K-3-3.south east) -- (ret-1-4.south west);
+    
+      \foreach \i in {1,2,3} {
+          \foreach \j in {4,5,6} {
+              \node[font=\tiny, scale=0.6, shift={(-1.2ex,-2ex)}] at (mtr-\i-\j) {$\times \pgfmathparse{int(mod(\i+\j,2))}\pgfmathresult$};
+            }
+        }
+    
+    \end{tikzpicture}
+    \caption{The convolution of an input \(X\) and kernel \(Y\) {\protect\cite{riebesell_tikz_2020}.}}
+    \label{fig:conv-1d}
+\end{figure}
+
 
 
 % In the continuous case, equation \ref{1D-discrete-convolution} becomes
@@ -517,29 +589,19 @@ In one dimension, discrete convolution is denoted
 
 One of the most common applications of CNNs is in digital image processing. In the case of a black and white image, the input data is a two-dimensional tensor. Discrete convolution in two dimensions can be performed as follows \cite{Goodfellow-et-al-2016}. %check this
 
-\begin{equation}
-    s(i,j) = (x*y)(i,j)\sum\limits_{\substack{m}}\sum\limits_{\substack{n}} x(i,j)y(i-m,j-n)
-    \label{2D-discrete-convolution}
-\end{equation}
+\[s(i,j) = (x*y)(i,j)\sum\limits_{\substack{m}}\sum\limits_{\substack{n}} x(i,j)y(i-m,j-n)\]
 
 Since convolution is commutative, the following also holds. 
 
-\begin{equation}
-    s(i,j) = (y*x)(i,j)\sum\limits_{\substack{m}}\sum\limits_{\substack{n}} x(i-m,j-n)y(i,j)
-    \label{flipped-2D-discrete-convolution}
-\end{equation}
+\[s(i,j) = (y*x)(i,j)\sum\limits_{\substack{m}}\sum\limits_{\substack{n}} x(i-m,j-n)y(i,j)\]
 
 Two-dimensional discrete convolution is equivalent to reversing the row and column indices of the kernel, performing element-wise multiplication, and taking the sum of the products. In the context of deep learning, the term ``convolution" often refers to a similar operation called cross-correlation (equation). This is equivalent to convolution without the reversing of the matrix indices \cite{Goodfellow-et-al-2016}. 
 
-\begin{equation}
-    s(i,j) = (y*x)(i,j)\sum\limits_{\substack{m}}\sum\limits_{\substack{n}} x(i+m,j+n)y(i,j)
-    \label{cross-correlation}
-\end{equation}
+\[s(i,j) = (y*x)(i,j)\sum\limits_{\substack{m}}\sum\limits_{\substack{n}} x(i+m,j+n)y(i,j)\]
 
 \subsection{How Convolution is Used in Deep Neural Networks}
 
 Since one kernel can only extract one feature, each convolutional layer in a network uses multiple kernels. CNNs can be very computationally expensive to train, so we often skip over positions in the kernels to reduce training time. The width of the kernel and the size of the output can also be controlled by zero padding the input. Without zero padding, the output of each later would continue to shrink. The number of rows/columns per convolution is referred to as the stride of the convolution operation \cite{Goodfellow-et-al-2016}. % check this
-
 
 \subsection{The Convolutional Layer}
 
