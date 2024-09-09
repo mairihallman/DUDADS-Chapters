@@ -1,25 +1,48 @@
 \documentclass{article}
+
+
+
 \usepackage{graphicx} % Required for inserting images
 % \usepackage[margin=2.54cm]{geometry}
-\usepackage{amsmath} % For mathematical symbols and environments
+
+\usepackage{amsmath, amsfonts, amssymb, bm, mathtools} % For mathematical symbols and environments
 \usepackage{pgfplots}
 \usepackage{subcaption}
 \usepackage{hyperref}
 \usepackage{tikz}
-\usetikzlibrary{matrix, positioning}
-\usepackage[backend=biber, style=numeric, citestyle=numeric, maxcitenames=1]{biblatex} %Imports biblatex package
-\usepackage{mathtools}
+\usetikzlibrary{calc}
+% \usetikzlibrary{external}
+% \tikzexternalize % Externalize TikZ pictures to avoid recompiling them every time
+
+%\usetikzlibrary{ positioning}
+\usepackage[backend=biber, style=numeric, citestyle=numeric]{biblatex} %Imports biblatex package
 \usepackage{physics}
 \usepackage{placeins}
 \usepackage[final]{listings}
 
-% CNN
+% CNN and RNN 
 \usepackage{amsmath} % for aligned
 \usepackage{listofitems} % for \readlist to create arrays
-\usetikzlibrary{arrows.meta} % for arrow size
+\usetikzlibrary{arrows.meta, matrix, positioning, fit, backgrounds}
 \usepackage[outline]{contour} % glow around text
 \contourlength{1.4pt}
 
+% % CNN STYLES
+\tikzset{
+    >=latex, % for default LaTeX arrow head
+    node/.style={thick,circle,draw=myblue,minimum size=22,inner sep=0.5,outer sep=0.6},
+    node in/.style={node,green!20!black,draw=mygreen!30!black,fill=mygreen!25},
+    node hidden/.style={node,blue!20!black,draw=myblue!30!black,fill=myblue!20},
+    node convol/.style={node,orange!20!black,draw=myorange!30!black,fill=myorange!20},
+    node out/.style={node,red!20!black,draw=myred!30!black,fill=myred!20},
+    connect/.style={thick,mydarkblue}, %,line cap=round
+    connect arrow/.style={-{Latex[length=4,width=3.5]},thick,mydarkblue,shorten <=0.5,shorten >=1},
+    node 1/.style={node in}, % node styles, numbered for easy mapping with \nstyle
+    node 2/.style={node hidden},
+    node 3/.style={node out}
+  }
+  \def\nstyle{int(\lay<\Nnodlen?min(2,\lay):3)} % map layer number onto 1, 2, or 3
+  
 
 
 \usepackage{xcolor}
@@ -77,7 +100,11 @@
     language = Python
 }
 
+
+
 \addbibresource{dl-ref.bib} %Import the bibliography file
+
+\input{C:/Users/mairi/code/dudads-chapters/math_commands.tex}
 
 \title{Deep Learning}
 \author{Mairi Hallman}
@@ -86,6 +113,7 @@
 
 
 \begin{document}
+
 
 \maketitle
 
@@ -104,55 +132,52 @@ You are likely familiar with scalars, vectors, and matrices. These can be though
 
 % fiber and slices
 
-\subsection{Tensor Products}
+\subsection{Tensor and Matrix Products}
 
-Tensor additon and subtraction are self-explanatory if matrix addition and subtraction are understood. The same cannot be said for tensor products. Below is an overview of tensor products necessary for the decompositions that will be presented in the next section.
+Below is an overview of tensor and matrix products necessary for the decompositions that will be presented in the next section.
 
 \subsubsection{Outer Product \(\circ\)}
 
-A tensor \(T^{(N)}\) can be expressed as a product of \(N\) vectors. This is called the outer product (denoted \(\circ\)).
+A tensor \(\tT^{(N)}\) can be expressed as a product of \(N\) vectors. This is called the outer product (denoted \(\circ\)).
 
 \begin{equation}
-    T^{(N)} = u_1 \circ u_2 \circ \dots \circ u_N
+    \tT^{(N)} = u_1 \circ u_2 \circ \dots \circ u_N
 \end{equation}
 
 % make less hand-wavey
 
 \subsubsection{Kronecker Product \(\otimes\)}
 
-The Konecker product of two matrices \(A\) and B, their Kronecker product is a matrix of the products of each element in \(A\) and the entire matrix \(B\).
+For two matrices \(A\) and B, their Kronecker product is a of the products of each element in \(A\) and the entire matrix \(B\).
 
-\begin{equation}
-    A \otimes B = \begin{bmatrix}
-    a_{11}B & a_{12}B & \dots & a_{1n}B \\
-    a_{21}B & a_{22}B & \dots & a_{2n}B \\
+\begin{align*}
+    \bm{A} \otimes \bm{B} = \begin{bmatrix}
+    a_{11}\bm{B} & a_{12}\bm{B} & \dots & a_{1n}\bm{B} \\
+    a_{21}\bm{B} & a_{22}\bm{B} & \dots & a_{2n}\bm{B} \\
     \vdots & \vdots & \ddots & \vdots \\
-    a_{m1}B & a{m2}B & \dots & a_{mn}B \end{bmatrix}
-    \label{Kronecker} 
-\end{equation}
+    a_{m1}\bm{B} & a{m2}\bm{B} & \dots & a_{mn}\bm{B} \end{bmatrix}
+\end{align*}
 
 \subsubsection{Khatri-Rao Product \(\odot\)}
 
-The Khatri-Rao product of two matrices \(A\) and \(B\), each with the same number of columns, is a matrix composed of the Kronecker products of the columns in matrix \(A\) and the columns in matrix \(B\) with the same indices.
+The Khatri-Rao product of two matrices \(\bm{A}\) and \(\bm{B}\), each with the same number of columns, is a matrix composed of the Kronecker products of the columns in matrix \(\bm{A}\) and the columns in matrix \(\bm{B}\) with the same indices.
 
-\begin{equation}
-    A^{:\times n} \odot B^{:\times n} = \begin{bmatrix}
+\begin{align*}
+    \bm{A}^{:\times n} \odot \bm{B}^{:\times n} = \begin{bmatrix}
     a_{:,1} \otimes b_{:,1} & a_{:,2} \otimes b_{:,2} & \dots & a_{:,n} \otimes b_{:,n} \end{bmatrix}
-    \label{Khatri-Rao}
-\end{equation}
+\end{align*}
 
 \subsubsection{Hadamard Product \(*\)}
 
 The Hadamard product of two matrices \(A\) and \(B\) of the same dimensions is a matrix formed of the products of the elements in \(A\) and \(B\) with the same indices.
 
-\begin{equation}
-    A^{m \times n} * B^{m \times n} = \begin{bmatrix}
+\begin{align*}
+    \bm{A}^{m \times n} * \bm{B}^{m \times n} = \begin{bmatrix}
     a_{11}b_{11} & a_{12}b_{12} & \dots & a_{1n}b_{1n} \\
     a_{21}b_{21} & a_{22}b_{22} & \dots & a_{2n}b_{2n} \\
     \vdots & \vdots & \ddots & \vdots \\
     a_{m1}b_{m1} & a_{m2}b_{m2} & \dots & a_{mn}b_{mn} \end{bmatrix} 
-    \label{Hadamard}
-\end{equation}
+\end{align*}
 
 \subsection{Tensor Decompositions}
 
@@ -163,7 +188,7 @@ The Hadamard product of two matrices \(A\) and \(B\) of the same dimensions is a
 The canonical polyadic, or CP Decomposition, decomposes a tensor into vectors.
 
 \begin{equation}
-    T = \sum_{r-1}^R u_r^{(1)} \circ  u_r^{(2)} \circ \dots  u_r^{(R)}\
+    \tT = \sum_{r-1}^R u_r^{(1)} \circ  u_r^{(2)} \circ \dots  u_r^{(R)}\
     \label{CP}
 \end{equation} % review notation
 
@@ -174,7 +199,7 @@ The canonical polyadic, or CP Decomposition, decomposes a tensor into vectors.
 The Tucker decomposition decomposes a tensor into a core tensor and factored matrices. % add more explanantion
 
 \begin{equation}
-    T = C\prod_{n=1}^N A^n
+    \tT = C\prod_{n=1}^N A^n
     \label{Tucker}
 \end{equation} % review notation
 
@@ -398,11 +423,11 @@ As mentioned in chapter 21, before a deep network can be trained, its weights ha
 
 \subsection{Weight Decay} % L2: DL 7.1.1, PML1 13.5.2 and L1: DL 7.1.2
 
-Recall ridge and LASSO regression from section 20.2.4. When generalized beyond linear models, these regularization techniques are known respectively as \(\it{L}^2\) and \(\it{L}^1\) regularization. In the context of neural networks, these methods are both commonly referred to as weight decay. Weight decay applies a regularization term to the objective function \(J(\vb*{w})\). The regularized objective function \(\tilde{J}(\vb*{w})\) is 
+Recall ridge and LASSO regression from section 20.2.4. When generalized beyond linear models, these regularization techniques are known respectively as \(\it{L}^2\) and \(\it{L}^1\) regularization. In the context of neural networks, these methods are both commonly referred to as weight decay. Weight decay applies a regularization term to the objective function \(J(\bm{w})\). The regularized objective function \(\tilde{J}(\bm{w})\) is 
 
-\[\tilde{J}(\vb*{w}) = J(\vb*{w}) +\frac{\lambda}{2}\norm{w}^2_2\]
+\[\tilde{J}(\bm{w}) = J(\bm{w}) +\frac{\lambda}{2}\norm{w}^2_2\]
 
-\[\tilde{J}(\vb*{w}) = J(\vb*{w}) +\lambda\norm{w}_1\]
+\[\tilde{J}(\bm{w}) = J(\bm{w}) +\lambda\norm{w}_1\]
 
 for \(\it{L}^1\) weight decay, where \(\lambda\) is a hyperparameter.
 
@@ -437,30 +462,30 @@ In section 21.4.3, we introduced stochastic gradient descent. Below are some com
 
 A significant drawback of SGD is that it can be very slow to converge to an optimal solution. SGD with momentum helps address this by adding a weighted moving average of the past gradients. This allows the algorithm to converge more quickly when sequential gradients move in the same direction, and to slow down if there is a sudden change \cite{pml1book}. 
 
-The momentum algorithm is implemented as follows. Here, \(\vb*{m}_t\) is the momentum, \(\eta\) is the learning rate, \(\vb*{g}_{t-1}\) is the gradient at previous output, and \(\vb*{\theta}_t\) is the output. \(\beta\) is the momentum hyperparamenter, which controls the exponential decay of the weights of past gradients. Common values of \(\beta\) are \(0.5\), \(0.9\), and \(0.99\) \cite{pml1book}
+The momentum algorithm is implemented as follows. Here, \(\bm{m}_t\) is the momentum, \(\eta\) is the learning rate, \(\bm{g}_{t-1}\) is the gradient at previous output, and \(\bm{\theta}_t\) is the output. \(\beta\) is the momentum hyperparamenter, which controls the exponential decay of the weights of past gradients. Common values of \(\beta\) are \(0.5\), \(0.9\), and \(0.99\) \cite{pml1book}
 
 % \eta or \eta_t ?
 
 \begin{align*}
-    \vb*{m}_t &= \beta \vb*{m}_{t-1} + \vb*{g}_{t-1} \\
-    \vb*{\theta}_t &= \vb*{\theta}_{t-1} - \eta \vb*{m}_t
+    \bm{m}_t &= \beta \bm{m}_{t-1} + \bm{g}_{t-1} \\
+    \bm{\theta}_t &= \bm{\theta}_{t-1} - \eta \bm{m}_t
 \end{align*}
 
-Some resources give a different set of formulas for optimization with momentum. Note that the following are equivalent when \(\vb*{m}_1 = 0\).
+Some resources give a different set of formulas for optimization with momentum. Note that the following are equivalent when \(\bm{m}_1 = 0\).
 
 \begin{align*}
-    \vb*{m}_t &= \beta \vb*{m}_{t-1} - \eta \vb*{g}_t \\
-    \vb*{\theta}_t &= \vb*{\theta}_{t-1} + \vb*{m}_t
+    \bm{m}_t &= \beta \bm{m}_{t-1} - \eta \bm{g}_t \\
+    \bm{\theta}_t &= \bm{\theta}_{t-1} + \bm{m}_t
 \end{align*}
 
 \subsection{Nesterov Momentum}
 
-An improved variant of the momentum algorithm was introduced in 2013 \cite{sutskever13}. This version, known as Nesterov momentum, uses the gradient at \(\vb*{\theta}_{t-1} + \beta \vb*{m}_{t-1}\) instead of at \(\theta{t-1}\). This can be thought of as an ``extrapolation" step. Instead of measuring at the previous output, we are assuming that the algorithm will continue to converge slightly ahead of this output with respect to the momentum. This allows for faster convergence.
+An improved variant of the momentum algorithm was introduced in 2013 \cite{sutskever13}. This version, known as Nesterov momentum, uses the gradient at \(\bm{\theta}_{t-1} + \beta \bm{m}_{t-1}\) instead of at \(\theta{t-1}\). This can be thought of as an ``extrapolation" step. Instead of measuring at the previous output, we are assuming that the algorithm will continue to converge slightly ahead of this output with respect to the momentum. This allows for faster convergence.
 
 \begin{align*}
-    \vb*{g}_{t} &= \nabla \mathcal{L} (\vb*{\theta}_{t} + \beta \vb*{m}_{t}) \\
-    \vb*{m}_{t+1} &= \beta \vb*{m}_{t} - \eta \vb*{g}_t \\
-    \vb*{\theta}_{t+1} &= \vb*{\theta}_t + \vb*{m}_{t+1}
+    \bm{g}_{t} &= \nabla \mathcal{L} (\bm{\theta}_{t} + \beta \bm{m}_{t}) \\
+    \bm{m}_{t+1} &= \beta \bm{m}_{t} - \eta \bm{g}_t \\
+    \bm{\theta}_{t+1} &= \bm{\theta}_t + \bm{m}_{t+1}
 \end{align*}
 
 % adaptive learning rate algorithms start here
@@ -472,9 +497,9 @@ Until now, our discussion of learning algorithms has concerned algorithms with s
 The algorithm is provided below. The variable \(s\) is the gradient accumulation variable, with \(r_1 = 0\). \(\eta\) is the global learning rate, and \(\epsilon\) is a very small value to prevent division by \(0\).
 
 \begin{align*}
-    \vb*{s}_t &= \vb*{s}_{t-1} + \sqrt{\vb*{g}_t \otimes \vb*{g}_t} \\
-    \vb*{\Delta \theta}_t &= \frac{-\eta}{\epsilon + \vb*{s_t}} \otimes \vb*{g} \\
-    \vb*{\theta}_t &= \vb*{\theta}_{t-1} + \vb*{\Delta \theta}_t
+    \bm{s}_t &= \bm{s}_{t-1} + \sqrt{\bm{g}_t \otimes \bm{g}_t} \\
+    \bm{\Delta \theta}_t &= \frac{-\eta}{\epsilon + \bm{s_t}} \otimes \bm{g} \\
+    \bm{\theta}_t &= \bm{\theta}_{t-1} + \bm{\Delta \theta}_t
 \end{align*}
 
 \subsection{RMSProp} % DL 8.5.2
@@ -484,31 +509,31 @@ RMsProp is similar to AdaGrad, but with an exponentially decaying moving average
 The parameters here are the same as for AdaGrad, with the addition of \(\beta\) for the decay rate. A common value for \(\beta\) is 0.9 \cite{pml1book}.
 
 \begin{align*}
-    \vb*{s}_t &= \beta \vb*{s}_{t-1} + (1-\beta)\vb*{g}_t \otimes \vb*{g}_t \\
-    \vb*{\Delta \theta}_t &= \frac{-\eta}{\epsilon + \vb*{s_t}} \otimes \vb*{g}_t \\
-    \vb*{\theta}_t &= \vb*{\theta}_{t-1} + \vb*{\Delta \theta}_t
+    \bm{s}_t &= \beta \bm{s}_{t-1} + (1-\beta)\bm{g}_t \otimes \bm{g}_t \\
+    \bm{\Delta \theta}_t &= \frac{-\eta}{\epsilon + \bm{s_t}} \otimes \bm{g}_t \\
+    \bm{\theta}_t &= \bm{\theta}_{t-1} + \bm{\Delta \theta}_t
 \end{align*}
 
 \subsection{Adadelta} % need to find source
 
-Adadelta is a variant of RMSProp that multiplies the update by an exponetially weighted moving average of the past updates \(\vb*{\delta}_t = \beta \vb*{\delta}_{t-1} + (1-\beta)(\vb*{\delta}_t)^2\) \cite{pml1book} \cite{zeiler2012}.
+Adadelta is a variant of RMSProp that multiplies the update by an exponetially weighted moving average of the past updates \(\bm{\delta}_t = \beta \bm{\delta}_{t-1} + (1-\beta)(\bm{\delta}_t)^2\) \cite{pml1book} \cite{zeiler2012}.
 
 \begin{align*}
-    \vb*{s}_t &= \beta \vb*{s}_{t-1} + (1-\beta)\vb*{g}_t \otimes \vb*{g}_t \\
-    \vb*{\Delta \theta}_t &= \frac{-\eta \sqrt{\vb*{\delta}_{t-1}}}{\epsilon + \vb*{s_t}} \otimes \vb*{g}_t \\
-    \vb*{\theta}_t &= \vb*{\theta}_{t-1} + \vb*{\Delta \theta}_t
+    \bm{s}_t &= \beta \bm{s}_{t-1} + (1-\beta)\bm{g}_t \otimes \bm{g}_t \\
+    \bm{\Delta \theta}_t &= \frac{-\eta \sqrt{\bm{\delta}_{t-1}}}{\epsilon + \bm{s_t}} \otimes \bm{g}_t \\
+    \bm{\theta}_t &= \bm{\theta}_{t-1} + \bm{\Delta \theta}_t
 \end{align*}
 
 \subsection{Adam} % DL 8.5.3
 
 The adaptive moment estimation, or Adam optimizer, can be thought of as a hybrid of the momentum and RMSProp algorithms. It is good practice to correct \(m_t\) and \(s_t\) for bias to prevent bias towards smaller values \cite{pml1book}. % add more
 \begin{align*}
-    \vb*{m}_t &= \beta_1 \vb*{m}_{t-1} + (1-\beta_1)\vb*{g}_{t-1} \\
-    \vb*{s}_t &= \beta_2 \vb*{s}_{t-1} + (1-\beta_3)\vb*{g}_t \otimes \vb*{g}_t \\
-    \hat{\vb*{m}}_t &= \frac{\vb*{m}_t}{1-\beta^t_1} \\ 
-    \hat{\vb*{s}}_t &= \frac{\vb*{s}_t}{1-\beta^t_2} \\ 
-    \vb*{\Delta \theta}_t &= \frac{-\eta}{\epsilon + \vb*{s_t}} \otimes \vb*{m}_t \\
-    \vb*{\theta}_t &= \vb*{\theta}_{t-1} + \vb*{\Delta \theta}_t
+    \bm{m}_t &= \beta_1 \bm{m}_{t-1} + (1-\beta_1)\bm{g}_{t-1} \\
+    \bm{s}_t &= \beta_2 \bm{s}_{t-1} + (1-\beta_3)\bm{g}_t \otimes \bm{g}_t \\
+    \hat{\bm{m}}_t &= \frac{\bm{m}_t}{1-\beta^t_1} \\ 
+    \hat{\bm{s}}_t &= \frac{\bm{s}_t}{1-\beta^t_2} \\ 
+    \bm{\Delta \theta}_t &= \frac{-\eta}{\epsilon + \bm{s_t}} \otimes \bm{m}_t \\
+    \bm{\theta}_t &= \bm{\theta}_{t-1} + \bm{\Delta \theta}_t
 \end{align*}
 
 \section{Convolutional Neural Networks}
@@ -589,19 +614,20 @@ In one dimension, discrete convolution is denoted
 
 One of the most common applications of CNNs is in digital image processing. In the case of a black and white image, the input data is a two-dimensional tensor. Discrete convolution in two dimensions can be performed as follows \cite{Goodfellow-et-al-2016}. %check this
 
-\[s(i,j) = (x*y)(i,j)\sum\limits_{\substack{m}}\sum\limits_{\substack{n}} x(i,j)y(i-m,j-n)\]
+\[(\bm{X}*\bm{K})(i,j) = \sum\limits_{\substack{m}}\sum\limits_{\substack{n}}X_{m,n}K_{i-m,j-m}\]
 
 Since convolution is commutative, the following also holds. 
 
-\[s(i,j) = (y*x)(i,j)\sum\limits_{\substack{m}}\sum\limits_{\substack{n}} x(i-m,j-n)y(i,j)\]
+\[(\bm{K}*\bm{X})(i,j) = \sum\limits_{\substack{m}}\sum\limits_{\substack{n}}X_{i-m,j-n}K_{m,n}\]
 
 Two-dimensional discrete convolution is equivalent to reversing the row and column indices of the kernel, performing element-wise multiplication, and taking the sum of the products. In the context of deep learning, the term ``convolution" often refers to a similar operation called cross-correlation (equation). This is equivalent to convolution without the reversing of the matrix indices \cite{Goodfellow-et-al-2016}. 
 
-\[s(i,j) = (y*x)(i,j)\sum\limits_{\substack{m}}\sum\limits_{\substack{n}} x(i+m,j+n)y(i,j)\]
+\[(\bm{K}*\bm{X})(i,j) = \sum\limits_{\substack{m}}\sum\limits_{\substack{n}} X_{i+m,j+n}K_{m,n}\]
+
 
 \subsection{How Convolution is Used in Deep Neural Networks}
 
-Since one kernel can only extract one feature, each convolutional layer in a network uses multiple kernels. CNNs can be very computationally expensive to train, so we often skip over positions in the kernels to reduce training time. The width of the kernel and the size of the output can also be controlled by zero padding the input. Without zero padding, the output of each later would continue to shrink. The number of rows/columns per convolution is referred to as the stride of the convolution operation \cite{Goodfellow-et-al-2016}. % check this
+  Since one kernel can only extract one feature, each convolutional layer in a network uses multiple kernels. CNNs can be very computationally expensive to train, so we often skip over positions in the kernels to reduce training time. The width of the kernel and the size of the output can also be controlled by zero padding the input. Without zero padding, the output of each later would continue to shrink. The number of rows/columns per convolution is referred to as the stride of the convolution operation \cite{Goodfellow-et-al-2016}. % check this
 
 \subsection{The Convolutional Layer}
 
@@ -615,6 +641,81 @@ The convolutional layers used in a CNN have three steps \cite{Goodfellow-et-al-2
 
 The output of each layer is then used as input to the next layer.
 % discrete case: \((a * b)_n = \sum\limits_{\substack{i,j \\ i+j=n}} a_i \cdot b_j\)
+
+\FloatBarrier
+\begin{figure}[h!]
+    \begin{centering}
+    % DEEP CONVOLUTIONAL NEURAL NETWORK
+    \begin{tikzpicture}[x=1.6cm,y=1.1cm]
+        \large
+        \message{^^JDeep convolution neural network}
+        \readlist\Nnod{5,5,4,3,2,4,4,3} % array of number of nodes per layer
+        \def\NC{6} % number of convolutional layers
+        \def\nstyle{int(\lay<\Nnodlen?(\lay<\NC?min(2,\lay):3):4)} % map layer number on 1, 2, or 3
+        \tikzset{ % node styles, numbered for easy mapping with \nstyle
+        node 1/.style={node in},
+        node 2/.style={node convol},
+        node 3/.style={node hidden},
+        node 4/.style={node out},
+        }
+        
+        % TRAPEZIA
+        \draw[myorange!40,fill=myorange,fill opacity=0.02,rounded corners=2]
+        %(1.6,-2.5) rectangle (4.4,2.5);
+        (1.6,-2.7) --++ (0,5.4) --++ (3.8,-1.9) --++ (0,-1.6) -- cycle;
+        \draw[myblue!40,fill=myblue,fill opacity=0.02,rounded corners=2]
+        (5.6,-2.0) rectangle++ (1.8,4.0);
+        \node[right=19,above=3,align=center,myorange!60!black] at (3.1,1.8) {convolutional\\[-0.2em]layers};
+        \node[above=3,align=center,myblue!60!black] at (6.5,1.9) {fully-connected\\[-0.2em]hidden layers};
+        
+        \message{^^J  Layer}
+        \foreachitem \N \in \Nnod{ % loop over layers
+        \def\lay{\Ncnt} % alias of index of current layer
+        \pgfmathsetmacro\prev{int(\Ncnt-1)} % number of previous layer
+        %\pgfmathsetmacro\Nprev{\Nnod[\prev]} % array of number of nodes in previous layer
+        \message{\lay,}
+        \foreach \i [evaluate={\y=\N/2-\i+0.5; \x=\lay; \n=\nstyle;}] in {1,...,\N}{ % loop over nodes
+            %\message{^^J  Layer \lay, node \i}
+            
+            % NODES
+            \node[node \n,outer sep=0.6] (N\lay-\i) at (\x,\y) {};
+            
+            % CONNECTIONS
+            \ifnum\lay>1 % connect to previous layer
+            \ifnum\lay<\NC % convolutional layers
+                \foreach \j [evaluate={\jprev=int(\i-\j); \cconv=int(\Nnod[\prev]>\N); \ctwo=(\cconv&&\j>0);
+                            \c=int((\jprev<1||\jprev>\Nnod[\prev]||\ctwo)?0:1);}]
+                            in {-1,0,1}{
+                \ifnum\c=1
+                    \ifnum\cconv=0
+                    \draw[connect,white,line width=1.2] (N\prev-\jprev) -- (N\lay-\i);
+                    \fi
+                    \draw[connect] (N\prev-\jprev) -- (N\lay-\i);
+                \fi
+                }
+                
+            \else % fully connected layers
+                \foreach \j in {1,...,\Nnod[\prev]}{ % loop over nodes in previous layer
+                \draw[connect,white,line width=1.2] (N\prev-\j) -- (N\lay-\i);
+                \draw[connect] (N\prev-\j) -- (N\lay-\i);
+                }
+            \fi
+            \fi % else: nothing to connect first layer
+            
+        }
+        }
+        
+        % LABELS
+        \node[above=3,align=center,mygreen!60!black] at (N1-1.90) {input\\[-0.2em]layer};
+        \node[above=3,align=center,myred!60!black] at (N\Nnodlen-1.90) {output\\[-0.2em]layer};
+        
+    \end{tikzpicture}
+    \caption{A deep convolutional network with four convolutional layers and two densely connected layers. {\protect\cite{neutelings_tikz_2022}.}}
+  
+    \end{centering}
+\end{figure}
+
+\FloatBarrier
 
 \subsection{Image Classification Example}
 
@@ -769,6 +870,8 @@ Epoch 9: early stopping
 
 Now that we have reached the accuracy threshold, let's plot the learning curves.
 
+\FloatBarrier
+
 \lstinputlisting[firstline=152,lastline=167]{dl-scripts/cnn-ex1-colab.py}
 
 \begin{figure}[h]
@@ -802,29 +905,88 @@ Until now, we have been dealing with deep networks that only flow in one directi
 
 In a recurrent neural network, the output of a node is used as input to the next layer, as in a feedforward network, but may also be input to the same node at the next time step \(t\) \cite{hands-on-ml}. More formally, node's hidden state \(h_t\) is a function of its new inputs and its output at \(h_{t-1}\) \cite{Goodfellow-et-al-2016}. Depending on the type of RNN, the hidden state may or may not be equal to the output at the previous time step.
 
-\[\vb*{h}_t = f(\vb*{h}_{t-1},\vb*{x}_t,\theta)\]
+\[\bm{h}_t = f(\bm{h}_{t-1},\bm{x}_t,\theta)\]
+
 
 RNNs are trained via backpropagation through time. Backpropagation through time involves "unrolling" the network across time steps and performing backpropagation as described in section 21.4.3. 
+
+\begin{figure}[h!]
+    \centering
+    \resizebox{0.7\textwidth}{!}{ % This resizes the TikZ figure to 70% of the text width
+    \begin{tikzpicture}[
+        node distance=2.5cm,
+        thick, % Line thickness
+        state/.style={rounded corners, minimum width=2cm, minimum height=1cm, draw, thick},
+        output/.style={rounded corners, minimum width=1.5cm, minimum height=2cm, draw, thick},
+        input/.style={rounded corners, minimum width=1.5cm, minimum height=2cm, draw, thick}
+    ]
+    
+    % Folded part
+    \node[state] (controller1) at (0, 0) {$h_t$};
+    \node[output, above of=controller1] (circlea1) {$y_t$};
+    \node[input, below of=controller1] (circleb1) {$x_t$};
+    
+    \draw[->] (controller1.north) -- (circlea1.south);
+    \draw[->] (circleb1.north) -- (controller1.south);
+    \draw[->] ($(controller1.north west)+(0.5,0)$) arc[start angle=20, end angle=330, x radius=1.2cm, y radius=1.2cm];
+    
+    % Unfold arrow (shortened and moved away from the controller)
+    \node[draw=none] (unfoldtext) [right=1.2cm of controller1] {};
+    \draw[->] ($(controller1.east)+(0.5,0)$) -- ($(controller1.east)+(2,0)$) node[midway, above] {Unfold};
+    
+    % Unfolded part (3 layers)
+    \foreach \i/\offset in {1/-1, 2/0, 3/+1} {
+        \pgfmathtruncatemacro{\tshift}{int(0 + \offset)} % Conditional sum for the subscripts
+        \node[state, right=of unfoldtext, xshift=\i*2.5cm] (controller\i) {$h_{t\ifnum\i=1-1\else\ifnum\i=2\relax\else+1\fi\fi}$};
+        \node[output, above of=controller\i] (circlea\i) {$y_{t\ifnum\i=1-1\else\ifnum\i=2\relax\else+1\fi\fi}$};
+        \node[input, below of=controller\i] (circleb\i) {$x_{t\ifnum\i=1-1\else\ifnum\i=2\relax\else+1\fi\fi}$};
+        \draw[->] (controller\i.north) -- (circlea\i.south);
+        \draw[->] (circleb\i.north) -- (controller\i.south);
+        
+        % Connect nodes with consistent arrow lengths
+        \ifnum\i>1
+            \draw[->] (controller\the\numexpr\i-1.east) -- (controller\i.west);
+        \fi
+    }
+    
+    \end{tikzpicture}
+    }
+    \caption{Your TikZ diagram inside a figure.}
+\end{figure}
+
 
 The four main types of recurrent neural networks are sequence-to-sequence, sequence-to-vector, vector-to-sequence, and encoder-decoder. We explore these networks in more detail below.
 
 \subsection{Vector-to-Sequence RNNs}
 
-Vector-to-sequence RNNs are used to generate sequences of variable lengths from vectors of a fixed length. At each time step, we take a sample of the outputs from \(h_t\), and use these as inputs for the next time step to get \(h_{t+1}\). This can be denoted by the conditional generative model, where \(T\) is the length of the input sequence.
+Vector-to-sequence RNNs are used to generate sequences of variable lengths from vectors of a fixed length. At each time step, we take a sample of the outputs from \(h_t\), and use these as inputs for the next time step to get \(h_{t+1}\). This can be denoted by the conditional generative model, where \(T\) is the length of the input sequence \cite{pml1book}.
 
 \begin{align*}
-    p(\vb*{y}_{1:T}|\vb*{x}) &= \sum_{\vb*{h}_{1:T}}p(\vb*{y}_{1:T},\vb*{h}_{1:T}|\vb*{x}) \\
-    &= \sum_{\vb*{h}_{1:T}} \prod_{t=1}^T p(\vb*{y}_t|\vb*{h}_t)p(\vb*{h}_t|\vb*{h}_{t-1},\vb*{y}_{t-1},\vb*{x})
+    p(\bm{y}_{1:T}|\bm{x}) &= \sum_{\bm{h}_{1:T}}p(\bm{y}_{1:T},\bm{h}_{1:T}|\bm{x}) \\
+    &= \sum_{\bm{h}_{1:T}} \prod_{t=1}^T p(\bm{y}_t|\bm{h}_t)p(\bm{h}_t|\bm{h}_{t-1},\bm{y}_{t-1},\bm{x})
 \end{align*}
 
-% stuff about computing hidden states?
+where the hidden state is 
+\begin{align*}
+    p(\bm{h}_t|\bm{h}_{t-1}, \bm{y}_{t-1}, \bm{x}) &= \mathbb{I}(\bm{h}_t = f(\bm{h}_{t-1}, \bm{y}_{t-1}, \bm{x}))\\
+    & =
+\begin{cases}
+    1 & \text{if } \bm{h}_t = f(\bm{h}_{t-1}, \bm{y}_{t-1}, \bm{x}) \\
+    0 & \text{if } \bm{h}_t \neq f(\bm{h}_{t-1}, \bm{y}_{t-1}, \bm{x})
+\end{cases}
+\end{align*}
+
+and the output function is \(\bm{h}_t = \varphi(\bm{W}_{xh}[\bm{x};\bm{y}_{t-1}] + \bm{W}_{hh}\bm{h}_{t-1}+\bm{b}_h)\) \cite{pml1book}.
+
+For categorical outputs, \(p(\bm{y}_t|\bm{h}_t)=\text{Categorical}(\bm{y}_t|\text{softmax}(\bm{W}_{hy}\bm{h}_t+\bm{b}_y))\). For continuous outputs, \(p(\bm{y}_t|\bm{h}_t)=\mathit{N}(\bm{y}_t|\bm{W}_{hy}\bm{h}_t+\bm{b}_y,\sigma^2\bm{I})\).
+
 \subsection{Sequence-to-Vector RNNs}
 
 A sequence-to-vector RNN takes in a sequence of variable length, and outputs a vector of fixed length. Rather than producing an output at each time step,  new input at each time step, but ignores the outputs until the last time step. This is most commonly used for classification of input sequences of varying lengths. For example, a sequence-to-vector model could be used to emails as legitimate or spam. We can represent this RNN as a conditional generative model \cite{pml1book}. 
 
-\[p(\vb*{y}|\vb*{x}_{1:T}) = \text{Categorical}(\vb*{y}_t|\text{softmax}(\vb*{W}\vb*{h}_T))\]
+\[p(\bm{y}|\bm{x}_{1:T}) = \text{Categorical}(\bm{y}_t|\text{softmax}(\bm{W}\bm{h}_T))\]
 
-\subsection{Sequence-to-sequence RNNs}
+\subsection{Sequence-to-Sequence RNNs}
 
 Next, we will consider RNNs with variable input and output lengths. Here, we will assume that the input and output sequences are the same size. In this case, the conditional generative model is defined as follows \cite{pml1book}.
 
@@ -832,38 +994,48 @@ Next, we will consider RNNs with variable input and output lengths. Here, we wil
 
 The inital hidden state is \(h_1 = f(h_0, x_1) = f_0(x_1)\) \cite{pml1book}. 
 
-% bidirectional RNN?
-
 \subsection{Encoder-Decoder Models}
 
 What if we want a sequence-to-sequence model where the output and input sequences aren't necessarily the same size? In this case, we use an encoder-decoder network. Here, the encoder is a sequence-to-vector RNN, and the decoder is a vector-to-sequence RNN. The decoder takes the encoder's output as its input to generate a sequence.
+
+\subsection{Bidirectional RNNs}
+
+In some cases, we want an output at time \(t\) to depend on both future and past inputs. In this case, we use a bidirectional RNN. A birdirectional RNN consists of two RNNs: one "reads" inputs from right to left (computes hidden states for past inputs), and the other works from left to right (hidden states for future inputs) \cite{pml1book}\cite{hands-on-ml}.
+
+The forward and backward hidden states are computed
+\begin{align*}
+    \bm{h}^\rightarrow_t &= \varphi{\bm{W}^\rightarrow_{xh}\bm{x}_t + \bm{W}^rightarrow_{hh}\bm{h}^\rightarrow_{t-1}+\bm{b}^\rightarrow_h} \\
+    \bm{h}^\leftarrow_t &= \varphi{\bm{W}^\leftarrow_{xh}\bm{x}_t + \bm{W}^rightarrow_{hh}\bm{h}^\leftarrow_{t+1}+\bm{b}^\leftarrow_h} \\
+\end{align*}
+
+and \(\bm{h}_t=[\bm{h}^\rightarrow_t, \bm{h}^\leftarrow_t]\)
 
 \subsection{Long-term memory}
 
 Due to vanishing gradients, RNNs have a tendency to ``forget'' information that is too far into the past. To overcome this, we can use specialized recurrent units. These units allow the network to learn which information to remember long-term, and which to discard \cite{hands-on-ml}.
 
-\subsubsection{Long SHort-Term Memory (LSTM) Units}
+\subsubsection{Long Short-Term Memory (LSTM) Units}
 
 LSTM cells add additional information to the hidden state via a memory cell \cite{pml1book}. We can think of the hidden state as short-term memory, and the memory cell's state as long-term memory. Which information is stored in the memory cell is controlled by an input gate, a forget gate, and an output gate. Below is an overview of how these gates interact with the memory cell to control the unit's long-term memory and update the hidden state.
 
 \begin{align*}
-    \vb*{I}_t &= \sigma(\vb*{X}_t\vb*{W}_{xi} + \vb*{H}_{t-1}W_{hi} + \vb*{b}_i) & \text{input gate} \\
-    \vb*{F}_t &= \sigma(\vb*{X}_t\vb*{W}_{xt} + \vb*{H}_{t-1}W_{hf} + \vb*{b}_f) & \text{forget gate} \\
-    \vb*{O}_t &= \sigma(\vb*{X}_t\vb*{W}_{xo} + \vb*{H}_{t-1}W_{ho} + \vb*{b}_o) & \text{output gate} \\
-    \vb*{\tilde{C}}_t &= tanh(\vb*{X}_t\vb*{W}_{xc} + \vb*{H}_{t-1}\vb*{W}_{hc} +\vb*{b}_c) & \text{candidate memory cell} \\
-    \vb*{C}_t &= \vb*{F}_t * \vb*{C}_{t-1} + \vb*{I}_t * \vb*{tilde{C}}_t & \text{final memory cell computed based on previous memory cell and candidate memory cell, weighted by input and forget values} \\
-    \vb*{H}_t &= \vb*{O}_t * tanh(\vb*{C}_t) &= final hidden state
+    \bm{I}_t &= \sigma(\bm{X}_t\bm{W}_{xi} + \bm{H}_{t-1}W_{hi} + \bm{b}_i) & \text{input gate} \\
+    \bm{F}_t &= \sigma(\bm{X}_t\bm{W}_{xt} + \bm{H}_{t-1}W_{hf} + \bm{b}_f) & \text{forget gate} \\
+    \bm{O}_t &= \sigma(\bm{X}_t\bm{W}_{xo} + \bm{H}_{t-1}W_{ho} + \bm{b}_o) & \text{output gate} \\
+    \bm{\tilde{C}}_t &= tanh(\bm{X}_t\bm{W}_{xc} + \bm{H}_{t-1}\bm{W}_{hc} +\bm{b}_c) & \text{candidate memory cell} \\
+    \bm{C}_t &= \bm{F}_t * \bm{C}_{t-1} + \bm{I}_t * \bm{tilde{C}}_t & \text{final memory cell} \\
+    \bm{H}_t &= \bm{O}_t * tanh(\bm{C}_t) &= \text{final hidden state}
 \end{align*}
 
 \subsubsection{Gated Recurrent Units (GRUs)}
 
-GRUs are a simplified variation of LSTM units that elimimate the need for a memory cell. The input and forget gates are replaced with one update gate \(\vb*{Z}_t\). A reset gate is added to determine which components of the previous state will be used to get the next state \cite{hands-on-ml}, and the output gate is removed entirely \cite{pml1book}.
+GRUs are a simplified variation of LSTM units that elimimate the need for a memory cell. The input and forget gates are replaced with one update gate \(\bm{Z}_t\). A reset gate is added to determine which components of the previous state will be used to get the next state \cite{hands-on-ml}, and the output gate is removed entirely \cite{pml1book}.
 
 \begin{align*}
-    \vb*{R_t} &= \sigma(\vb*{X}_t\vb*{W}_{xr} + \vb*{H}_{t-1}\vb*{W}_{hr} + \vb*{b}_r) & reset gate \\
-    \vb*{Z_t} &= \sigma(\vb*{X}_t\vb*{W}_{xz} + \vb*{H_{t-1}}\vb*{W}_{ht} + \vb*{b}_z) & update gate \\
-    \vb*{\tilde{H}_t} &= tanh(\vb*{H}_t - \vb*{W}_{xh} + (\vb*{R}_t * \vb*{H_{t-1}})\vb*{W}_{hh} + \vb*{b}_h) & candidate hidden state \\
-    \vb*{H}_t &= \vb*{Z}_t * \vb*{H}_{t-1} + (1 - \vb*{Z}_t)*\vb*{H}_t & final hidden state \\
+    \bm{R_t} &= \sigma(\bm{X}_t\bm{W}_{xr} + \bm{H}_{t-1}\bm{W}_{hr} + \bm{b}_r) & \text{reset gate} \\
+    \bm{Z_t} &= \sigma(\bm{X}_t\bm{W}_{xz} + \bm{H_{t-1}}\bm{W}_{ht} + \bm{b}_z) & \text{update gate} \\
+    \bm{\tilde{H}_t} &= tanh(\bm{H}_t - \bm{W}_{xh} + (\bm{R}_t * \bm{H_{t-1}})\bm{W}_{hh} + \bm{b}_h) & \text{candidate hidden state} \\
+    \bm{H}_t &= \bm{Z}_t * \bm{H}_{t-1} + (1 - \bm{Z}_t)*\bm{H}_t & \text{final hidden state} \\
 \end{align*}
 
 \subsection{Music Generation Example}
@@ -962,9 +1134,9 @@ This section presents a very brief overview of several specialized network archi
 
 Young children typically aren't very good liars. As people get older, they acquire more experience getting caught in bad lies and getting away with good ones. This experience should, in theory, make them better liars.
 
-This scenario illustrates the idea behind generative adversarial networks, or GANs. GANs consist of two networks; a generator and a discriminator. The generator outputs samples \(\vb*{x} = g(\vb*{z; \theta_{(g)}})\). The generated data and real data are input to the discriminator, which must then assign each point a probability \(d(X; theta^{(d)})\). This corresponds to the probability that \(x\) is a "real" data point (not produced by the generator). The payoff of the discriminator \cite{Goodfellow-et-al-2016} (its ability to differentiate between real and fake data) can be denoted 
+This scenario illustrates the idea behind generative adversarial networks, or GANs. GANs consist of two networks; a generator and a discriminator. The generator outputs samples \(\bm{x} = g(\bm{z; \theta_{(g)}})\). The generated data and real data are input to the discriminator, which must then assign each point a probability \(d(X; theta^{(d)})\). This corresponds to the probability that \(x\) is a "real" data point (not produced by the generator). The payoff of the discriminator \cite{Goodfellow-et-al-2016} (its ability to differentiate between real and fake data) can be denoted 
 
-\[v(\vb*{theta}^{(g),}\vb*{theta}^{(d)} = \mathbf{E}_{x~p_{\text{data}}}log[d(x)] + mathbf{E}_{x~p_{\text{model}}}log[1-d(x)])\]
+\[v(\bm{theta}^{(g),}\bm{theta}^{(d)} = \mathbf{E}_{x~p_{\text{data}}}log[d(x)] + mathbf{E}_{x~p_{\text{model}}}log[1-d(x)])\]
 
 and the optimal generating function \cite{Goodfellow-et-al-2016} is
 \[g* = arg\underset{g}{min}(\underset{d}{max}v(g,d))\]
