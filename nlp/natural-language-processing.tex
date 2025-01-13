@@ -1,4 +1,9 @@
 \documentclass{article}
+
+\usepackage{booktabs}% http://ctan.org/pkg/booktabs
+\newcommand{\tabitem}{~~\llap{\textbullet}~~}
+
+
 \usepackage{graphicx} % Required for inserting images
 % \usepackage[margin=2.54cm]{geometry}
 \usepackage{amsmath} % For mathematical symbols and environments
@@ -73,7 +78,26 @@
 
 \section{Introduction}
 
-Natural Language Processing (NLP) methods either take in 
+Natural Language Processing (NLP) methods may either take in unstructured natural language as input, or produce it as output.
+
+Much like the humans who use them, natural languages are as abiguous as they are variable. Consider the following examples: % can change back to sushi example if you like
+
+I love cooking, my family, and my cat.
+I love cooking my family and my cat.
+
+The addition of two commas completely changes the meaning of the sentence.
+
+Humans excel at using language (expression, perception, and nuance), but fall short when it comes to understanding and explaining the axioms that govern language. Without these axioms, it is very difficult to utilize algorithms that require a more formal lingustic framework. As a consequence, computers typically have a hard time interpreting and outputting natural language.
+
+Machine learning methods, particularily subervised learning algorithms, can be quite effective when defining "good" rules is a challenge. However, annotating outputs is simple compared to what humans can do (even if it is resource-intensive).
+
+\begin{tabular}{ l l }
+  \textbf{Challenge:} & input is variable and/or ambiguous \\
+  & rules are unknown and/or poorly defined \\
+  & natural languages are
+  
+  \tabitem \textbf{discrete:}
+\end{tabular}
 
 \section{Learning Basics and Linear Models}
 
