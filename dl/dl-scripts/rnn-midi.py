@@ -175,12 +175,24 @@ input_size = 3
 hidden_size = 128
 output_size = vocab_size
 
-data_module = MidiDataModule(midi_dir=midi_dir, seq_length=seq_length, batch_size=batch_size)
+data_module = MidiDataModule(midi_dir=midi_dir,
+                             seq_length=seq_length,
+                             batch_size=batch_size)
 
-model = MIDIModel(input_size=input_size, hidden_size=hidden_size, output_size=output_size)
+model = MIDIModel(input_size=input_size,
+                  hidden_size=hidden_size,
+                  output_size=output_size)
 
-early_stop_callback = EarlyStopping(monitor="val_loss", min_delta=0.00, patience=3, verbose=False, mode="min")
-trainer = L.Trainer(max_epochs=20, callbacks=[early_stop_callback], accelerator="gpu" if torch.cuda.is_available() else "cpu", devices=1)
+early_stop_callback = EarlyStopping(monitor="val_loss",
+                                    min_delta=0.00,
+                                    patience=3,
+                                    verbose=False,
+                                    mode="min"
+                                    )
+trainer = L.Trainer(max_epochs=20,
+                    callbacks=[early_stop_callback],
+                    accelerator="gpu" if torch.cuda.is_available() else "cpu",
+                    devices=1)
 
 trainer.fit(model, data_module)
 
@@ -223,7 +235,11 @@ def get_seed_sequence(midi_file_path, device, num_notes=25, skip_notes=25, quant
     return seed_sequence_tensor
 
 midi_file_path = "path-to/seed-file.mid" # make sure this isn't part of the training / validation dataset
-seed_sequence = get_seed_sequence(midi_file_path, device=device, num_notes=25, quantize_step=0.125, quantize_duration=0.125)
+seed_sequence = get_seed_sequence(midi_file_path,
+                                  device=device,
+                                  num_notes=25,
+                                  quantize_step=0.125,
+                                  quantize_duration=0.125)
 
 # print(seed_sequence)
 

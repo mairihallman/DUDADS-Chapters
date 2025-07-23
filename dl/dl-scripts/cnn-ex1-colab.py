@@ -118,7 +118,11 @@ model.compile(optimizer='adam',
               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
               metrics=['accuracy'])
 
-history = model.fit(ds_train, epochs=10, validation_data=(ds_val),callbacks=[early_stop])
+history = model.fit(ds_train,
+                    epochs=10,
+                    validation_data=(ds_val),
+                    callbacks=[early_stop]
+                    )
 
 model.evaluate(ds_test)
 

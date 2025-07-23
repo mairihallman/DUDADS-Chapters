@@ -18,3 +18,15 @@ archive/
 courses.md
 dl/dl-notebooks/FluidR3_GM.sf2
 ignore/
+big_data/big_data_notebooks
+embedding_layer.weights.h5
+glove.6B.100d.txt
+.gitignore
+Master_project (1).ipynb
+.gitignore
+Master_project.html
+Master_project.ipynb
+new_Master_project.html
+dl/.DS_Store
+dl/12-May-25/
+nlp/.DS_Store
